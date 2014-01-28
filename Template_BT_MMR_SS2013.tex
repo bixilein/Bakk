@@ -1,0 +1,294 @@
+% !TEX encoding = IsoLatin2
+
+% LaTeX Template Version 3.1,  JuLY 2011
+% by Dr. Andreas Drauschke (andreas.drauschke@technikum-wien.at) and Dr. Susanne Teschl (susanne.teschl@technikum-wien.at)
+% minor adaptations by Harald Stockinger (harald.stockinger@technikum-wien.at)
+%
+% Adaptions for MR done by M. Widrich (BMR6) in January 2012, tested by W. Kubinger in March 2012
+%
+% Fragen zu den BMR- und MMR-Vorlagen bitte an Wilfried Kubinger (kubinger@technikum-wien.at) richten.
+%
+% Angepasst an MMR4, SS2013: 27.2.2013, WK
+%
+
+
+\documentclass[a4paper,bibtotoc,oneside]{scrbook}
+% For short papers the documentclass "scrartcl" is sufficient. In this case the highest sectioning structure is "section" ("chapter" does not exist).
+% \documentclass[a4paper,bibtotoc,oneside]{scrartcl}
+
+\usepackage{hyperref}
+
+\usepackage[ansinew]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman,english]{babel}
+\selectlanguage{english}
+\usepackage{amsmath,amssymb,amsfonts,amstext}
+
+\usepackage{fancyhdr}
+\lfoot[\fancyplain{}{}]{\fancyplain{}{}}
+\rfoot[\fancyplain{}{}]{\fancyplain{}{}}
+\cfoot[\fancyplain{}{\footnotesize\thepage}]{\fancyplain{}{\footnotesize\thepage}}
+\lhead[\fancyplain{}{\footnotesize\nouppercase\leftmark}]{\fancyplain{}{}}
+\chead{}
+\rhead[\fancyplain{}{}]{\fancyplain{}{\footnotesize\nouppercase\sc\leftmark}}
+
+\usepackage{color}
+
+\usepackage{helvet}
+\renewcommand{\familydefault}{cmss}
+
+\usepackage[pdftex]{graphicx}
+
+\usepackage{harvard}
+
+\usepackage{array}
+
+\setlength{\textheight}{225mm}
+\setlength{\textwidth}{1.05\textwidth}
+
+
+\tolerance = 9999
+\sloppy
+
+% Anpassung einiger "Uberschriften
+\renewcommand\figurename{Figure}
+\renewcommand\tablename{Table}
+
+% Abbildungen, Gleichungen und Tabellen werden fortlaufend nummeriert
+\renewcommand\thefigure{\arabic{figure}}
+\renewcommand\thetable{\arabic{table}}
+\renewcommand\theequation{\arabic{equation}}
+\usepackage{remreset}
+\makeatletter
+  \@removefromreset{figure}{chapter}
+  \@removefromreset{table}{chapter}
+  \@removefromreset{equation}{chapter}
+\makeatother
+
+%Zum korrekten Formatieren von Verzeichnissen
+\usepackage{tocloft}
+\renewcommand{\cftfigpresnum}{Figure~}
+\renewcommand{\cfttabpresnum}{Table~}
+\renewcommand{\cftfigaftersnum}{:}
+\renewcommand{\cfttabaftersnum}{:}
+\setlength{\cftfignumwidth}{2.5cm}
+\setlength{\cfttabnumwidth}{2.5cm}
+\setlength{\cftfigindent}{0cm}
+\setlength{\cfttabindent}{0cm}
+
+\begin{document}
+
+%Festlegen des Zitier-Standards
+\bibliographystyle{HarvardFHTWMR_V1_2e}%Zitierstandard FH Technikum Wien, Studiengang Mechatronik/Robotik
+\citationstyle{dcu}%Correct citation-style (Harvardand, ";" between citations, "," between author and year)
+\citationmode{abbr}%use "et al." with first citation
+    \newcommand{\citepic}[1]{(Source: \protect\cite{#1})}%Zitat: Bild
+    \newcommand{\citefig}[2]{(Source: \protect\cite{#1}, p. #2)}%Zitat: Bild aus Dokument
+    \newcommand{\citefigm}[2]{(Source: taken with modification from \protect\cite{#1}, p. #2)}%Zitat: modifiziertes Bild aus Dokument
+    \newcommand{\citep}{\citeasnoun}%In-Line Zitiat entweder mit \citep{} oder \citeasnoun{}
+    \newcommand{\acessedthrough}{Available at:}%Für URL-Angabe
+    \newcommand{\acessedthroughp}{Available through:}%Für URL-Angabe (Geschützte Datenbank, Zugriff durch FH)
+    \newcommand{\acessedat}{Accessed}%Für URL-Datum-Angabe
+    \newcommand{\singlepage}{p.}%Für Seitenangabe (einzelne Seite)
+    \newcommand{\multiplepages}{pp.}%Für Seitenangabe (mehrere Seiten)
+    \newcommand{\chapternr}{Ch.}%Für Kapitelangabe
+    \renewcommand{\harvardand}{\&}%Harvardand in Zitaten
+    \newcommand{\abstractonly}{Abstract only}
+    \newcommand{\edition}{~edition}%Edition -> note, that you have to write "edition = {2nd},"!
+
+\pagestyle{fancy}
+
+% title page:
+\thispagestyle{empty}
+\begin{picture}(0,0)
+\color{white}\sffamily
+\put(-101,-749){\includegraphics[width=1.002\paperwidth, height=\paperheight]{BM_2011.pdf}}
+\put(220,-670){\includegraphics[width=0.5\textwidth]{FHTW_Logo_4c.pdf}}
+\put(-30, -20){\bfseries\huge BACHELOR'S PAPER}
+% insert degree program:
+\put(-30,-50){\Large Degree Program XXX}
+
+
+\put(-32,-150){
+\begin{minipage}{14cm}
+\bfseries\huge
+% insert title:
+Title Title Title Title Title Title Title Title Title Title
+\end{minipage}
+}
+% insert author:
+\put(-30,-250){\large By: Degree First name Surname, Degree}
+% insert student ID:
+\put(-30,-270){\large Student Number: XXXXXXXXXX}
+% insert supervisor:
+\put(-30,-310){\large Supervisor: Degree First name Surname, Degree}
+\put(-30,-350){\large Vienna, \today}
+\color{black}
+\end{picture}
+
+
+\newpage
+
+\section*{Declaration}\thispagestyle{empty}
+I confirm that this paper is entirely my own work. All sources and quotations have been fully acknowledged in the appropriate places
+with adequate footnotes and citations. Quotations have been properly acknowledged and marked with appropriate punctuation.
+The works consulted are listed in the bibliography. This paper has not been submitted to another examination panel in the same or a
+similar form, and has not been published. I declare that the present paper is identical to the version uploaded.
+\\[5\baselineskip]
+\rule{5cm}{0.2pt}\hfill\rule{5cm}{0.2pt}\\
+\phantom{Datum }Place, Date\hfill Signature\hspace{15mm}
+\newpage
+
+
+
+
+
+% German abstract:
+\section*{Kurzfassung}\thispagestyle{empty}
+Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text ...
+\\ \vfill
+% Please insert 3-5 German keywords that characterize the thesis:
+\paragraph*{Schlagw{\"o}rter:} Schlagwort 1, Schlagwort 2, Schlagwort 3, Schlagwort 4, Schlagwort 5
+
+
+\newpage
+
+% English abstract:
+\section*{Abstract}\thispagestyle{empty}
+Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text ...
+\\ \vfill
+% Please insert 3-5 English keywords that characterize the thesis:
+\paragraph*{Keywords:} Keyword 1, Keyword 2, Keyword 3, Keyword 4, Keyword 5
+\newpage
+
+\section*{Acknowledgements}
+\thispagestyle{empty}
+Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text ...
+\newpage
+
+\tableofcontents\thispagestyle{empty}
+\newpage
+
+\setcounter{page}{1}
+\chapter[First Chapter]{Heading of the first chapter}
+
+Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text ...
+
+\section[First Section]{Heading of the first section}
+
+Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text ...
+
+\subsection[First Subsection]{Heading of the first subsection}
+
+Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text ...
+
+\subsubsection[First Sub-subsection]{One more level}
+
+Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text ...
+
+\selectlanguage{ngerman}%Ermöglichung der einfacheren Schreibweise von deutschen Umlauten und Anführungszeichen
+\chapter{Anmerkungen zum MR-Zitierstandard}
+
+\section{Verwendung von BibTeX}
+
+Das Literaturverzeichnis wird automatisch generiert. Die Quellenangaben befinden sich in der Datei "`*.bib"'. Zur einfachen Recherche der Literaturquellen-Daten empfiehlt sich auch \textit{google-scholar} (\url{scholar.google.de}). Dazu wird unter den "`Einstellungen"' (rechts oben) die Option  "`\textbf{Bibliographiemanager}: Links zum Importieren von Literaturverweisen in BibTeX anzeigen."' aktiviert. Danach kann eine Literaturquelle gesucht und durch einen Klick auf "`In BibTeX importieren"' die Informationen per Copy\& Paste "ubernommen werden.\\
+
+Kompiliert wird "uber bibtex mit pdflatex oder PS bzw. DVI.
+F"ur diese Vorlage z.B. mit pdflatex$\rightarrow$bibtex$\rightarrow$bibtex$\rightarrow$pdflatex$\rightarrow$pdflatex. Die URL-Darstellung und die PDF Eigenschaften sowie die r"omische Nummerierung im PDF vor dem Hauptteil werden mit dem hypersetup bzw. \textbackslash pagenumbering\{\} generiert.\\
+
+
+\section{Zitate "`im Text"'}
+
+In-Line Zitate k"onnen mit \textbackslash citeasnoun\{Quelle\} oder \textbackslash citep\{Quelle\} durchgef"uhrt werden. Bei mehreren Autoren sind die Quellen-Namen nach der Jahreszahl zu ordnen.
+
+Beispiele f"ur Zitate "`im Text"': nach \citeasnoun{Braun07} und \citeasnoun{Kastner11} oder \citep{Kessler11}.\\
+
+\section{Zitate "`nicht direkt im Text"'}
+
+"`Normale"' Zitate in Klammer werden mit \textbackslash cite\{Quelle\} erzeugt. Bei mehreren Autoren sind die Quellen-Namen durch einen Beistrich zu trennen und nach der Jahreszahl zu ordnen.
+
+Beispiele f"ur Zitate "`nicht direkt im Text"': \cite{Technikum11} bzw. \cite{Bach82,Zettler98,Astrom01}.
+
+\section{Mehrere Werke des selben Autors im selben Jahr}
+
+Bei mehreren Zitaten vom selben Autor im selben Jahr ist die Jahreszahl mit "`a"', "`b"', etc. zu erweitern (siehe *.bib-Datei).
+
+Beispiele f"ur mehrere Zitate des selben Autors im selben Jahr: \cite{Aangerman09a} und \cite{Aangerman09b}.\\
+
+\section{Abk"urzung mit "`et al."'}
+
+Bei mehr als zwei Autoren wird automatisch mit "`et al."' abgek"urzt: \cite{Zettler98}.
+
+\section{Bildbeschriftungen}
+
+Es gibt folgende Markos f"ur Quellenangabe bei fremden Fotos/Bildern:
+
+\begin{itemize}
+\item Referenz auf Foto/Bild: \textbackslash citepic\{Hemetsberger07\} $\overset{wird zu}{\Longrightarrow}$ \citepic{Hemetsberger07}
+\item Referenz auf Foto/Bild aus Dokument: \textbackslash citefig\{Lund92\}\{99\} $\overset{wird zu}{\Longrightarrow}$ \citefig{Lund92}{99}
+\item Referenz auf modifiziertes Foto/Bild aus Dokument: \textbackslash citefigm\{Lund92\}\{150\} $\overset{wird zu}{\Longrightarrow}$ \citefigm{Lund92}{150}
+\end{itemize}\ \\
+
+\section{Verf"ugbare Medientypen}
+Folgende Medientypen sind zur Zeit m"oglich:
+\begin{itemize}
+\item Bachelorarbeit/Projektbericht/etc.: \cite{Baldinger10,Piringer11}.
+\item Buch: \cite{Aangerman09a,Aangerman09b}.
+\item Datenblatt, Leitfaden: \cite{Anglia10,Atmel11}.
+\item E-Abstract (Nur Abstract verf"ugbar): \cite{Astrom01}.
+\item E-Book: \cite{Kastner11}.
+\item E-Book (Zugang durch FH): \cite{Kessler11}.
+\item E-Magazin oder E-Journal: \cite{Lund92,Zinner07}.
+\item E-Magazin oder E-Journal (Zugang durch FH): \cite{Bach82}.
+\item Edited Book: \cite{Braun07,Braun10}.
+\item Kapitel in einem Edited Book: \cite{Samson70,Smith75}.
+\item Masterthese/Dissertation: \cite{Pohn10,Humenberger11}.
+\item Normen: \cite{ISO98}.
+\item Paper, Konferenzbeitrag, Journalartikel: \cite{Zettler98,Gesztesy00}.
+\item Patent: \cite{Anderson10}.
+\item Photographien, Bilder: \cite{Hemetsberger07}.
+\item Photographien, Bilder (online): \cite{Dean08}.
+\item Website: \cite{Technikum11}.
+\item Zeitung: \cite{Slapper05}.
+\item Zeitung (online): \cite{Chittenden03}.
+\end{itemize}
+
+\selectlanguage{english}%Ende des deutschen Teils
+
+% Literaturverzeichnis
+\bibliography{Vorlage_BT_BMR_WS2013_Literatur}
+\newpage
+
+% Abbildungsverzeichnis und Tabellenverzeichnis
+\begingroup
+    \renewcommand*{\addvspace}[1]{}
+    \phantomsection
+    \addcontentsline{toc}{chapter}{\listfigurename}
+    \listoffigures
+    \newpage
+    \phantomsection
+    \addcontentsline{toc}{chapter}{\listtablename}
+    \listoftables
+\endgroup
+
+
+% If you use the document class "scrartcl" you need to use  \addsec{List of Abbreviations} instead of \addchap{List of Abbreviations}
+\addchap{List of Abbreviations}
+\hspace{-17mm}\begin{tabular}{>{\raggedleft}p{0.2\linewidth} p{0.75\linewidth} p{0.1\linewidth}}
+www & World Wide Web \\
+URL & Uniform Resource Locator
+\end{tabular}
+
+\begin{appendix}
+\chapter[First Appendix]{Heading of the first appendix}
+
+Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text ...
+
+
+\chapter[Second Appendix]{Heading of the second appendix}
+
+Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text ...
+
+\end{appendix}
+
+\end{document}
