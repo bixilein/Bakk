@@ -1,3 +1,6 @@
+% mention somewhere the size of int, double thing on different devices, thats why timeval has not been used
+
+
 % !TEX encoding = IsoLatin2
 
 % LaTeX Template Version 3.1,  JuLY 2011
@@ -34,6 +37,9 @@
 
 \usepackage{color}
 
+\usepackage{listings} %package for code
+\lstset{language=C, basicstyle=\footnotesize}
+
 \usepackage{helvet}
 \renewcommand{\familydefault}{cmss}
 
@@ -46,6 +52,7 @@
 \setlength{\textheight}{225mm}
 \setlength{\textwidth}{1.05\textwidth}
 
+\DeclareGraphicsExtensions{.jpg}
 
 \tolerance = 9999
 \sloppy
@@ -174,7 +181,7 @@ He thought me a lot and inspired me in many ways.
 \setcounter{page}{1}
 
 % Introduction = complete
-\chapter[Introduction]{Introduction}
+\chapter{Introduction}
 
 This thesis is a report about a projects which was carried out during a internship at the company "Dension" in Budapest. 
 This internship was part of the B.Sc. program Mechanics/Robotics at the university of applied science Technikum-Wien. 
@@ -189,21 +196,21 @@ company produces. This topic was given to me because synchronization of digital 
 profit a lot form it.
 
 % Subject area = complete
-\section[Subject area]{Subject area - Synchronization in digital science}
+\section{Subject area - Synchronization in digital science}
 
 Synchronization is a common problem in computer science and engineering. The internal clocks of computers and micro controllers are not very accurate,
  the problem is that that after some time all clocks differ due to cock drift. This is caused by different rates of the clocks with which time is counted. 
 The synchronization problem is a problem which occurs in many technical applications. There are several problems which are caused by the fact that clocks on different devices are not in sync, specially in distributed systems which should fulfill a shared task. 
 
 % Motivation !!!not complete !!!
-\section[Personal motivation]{Personal motivation}
+\section{Personal motivation}
 
 Time synchronization is a common problem in the field of digital science, % some applications 
 To work out an individual solution for this problem was not only a requested feature form the company, it was also profitable for me because I could learn
 a lot while working on the project.
 
-% Problem description = !!! incomplete !!!
-\section[Problem description]{Problem description}
+% Problem description = !!nearly complete  !!
+\section{Problem description}
 
 The microcontrollers which are produced and distributed by the company work on a UNIX based operating system which is specially designed 
 for their purpose and applications. These microcontrollers have very limited resources, like processing power and RAM. 
@@ -220,21 +227,21 @@ The company got the request form several of their customers that they would like
 This feature was requested for example to start videos in sync on monitors which are accessed by different microcontrollers. 
 So the company searched for a possibility to meet the needs of the costumer and synchronize different devices. It also had to be consider the resources available 
 on the devises are limited and that the other functionalities of the are not constrained. Playing video and audio can take a lot of processing power, 
-tests showed that playing a video and ab audio content at the same time already could take up to 90 - 95\% of the CPU power. 
-This fact has to be taken in account, because the synchronization should not lower the quality of the video.
+tests showed that playing a video and an audio content at the same time could take to 90 - 95\% of the CPU power. 
+This fact has to be taken in account, because the synchronization should not lower the quality of the video and audio.
 It was also an important point that that the synchronization get integrated in the existing player.
 
-% !!! design, implementation, integration, testing
+The task was to design, implement and test an application, which should enable to synchronize an event on microcntollers which are connected in a local network. 
 
 % state of the art = complete
-\section[State of the art ]{State of the art}
+\section{State of the art}
 
 There are already several solution for the synchronization problem. The first step to do, was to do an research on existing solution 
 and to understand the implementation and algorithm of these solution. On basis of this knowledge it was consider which parts of existing solution 
 could be used and what has to be implemented to find a optimal solution for the given problem. An other specification which arose through the request
 from the customers was that there will be no internet connection in most situations.
 
-\subsection[Existing synchronization solutions]{Existing synchronization solutions}
+\subsection{Existing synchronization solutions}
 
 One solution for the synchronization problem is the Network Time Protocol (NTP) which is a networking protocol for clock synchronization for 
 devices which are connected over a network. NTP is mainly used to synchronize computers over the Internet to high-precision timekeeping devices like atomic clocks.
@@ -259,7 +266,7 @@ Also other established time sync solutions like SNTP and PTP where considered bu
 As described above a protocol should be designed which has for the task relevant benefits of the algorithm which is used in NTP. For that reason the way how NTP
 works and how it is implemented was analyzed.
 
-\subsubsection[NTP]{NTP - Network Time Protocol}
+\subsubsection{NTP - Network Time Protocol}
 
 In NTP packets for Satrum 0 clocks are transmitted via internet with UDP packages. To take the transmission delay and the variance
 in transmission delays in account the delay form several runs is calculated and averaged with a modified version of Marzullo's algorithm". The time which is needed
@@ -267,82 +274,152 @@ till the message from the instance with the accurate clock is deliver to the dev
 delay can not be measured directly because the internal clocks of the two instances have different times and there is always an offset. To be able to determine 
 the transmission delay the round trip delay is measured. To measure the round trip delay a package is delivered from the first instance to the target device
 and than the target device answerers to the first instance, the time from sending the first message till receiving the answer is called the round trip delay.
-Every time when a packet was sent or received a timestamp is saved, from these timestamps the round trip delay and the offset can be calculated.
-
+Every time when a packet was sent or received a timestamp is saved, from these timestamps the round trip delay and the offset can be calculated. \\* \\*
 The round trip delay $\delta$ is calculated: 
-$$\delta=(t_3-t_0)-(t_2-t_1)$$
+$$\delta=(t_3-t_0)-(t_2-t_1)$$ \\*
+The offset $\Theta$ is calculated:
+$$\Theta=\frac{(t_1-t_0)+(t_2-t_3)}{2}$$ \\*
 where\\*
 $t_0$ is the timestamp when the packet was sent\\*
 $t_1$ is the timestamp when the packet was received from the device\\*
 $t_2$ is the timestamp when the response packet was sent from the device\\*
 $t_3$ is the timestamp of the response packet reception.\\*
-
-The offset $\Theta$ is calculated:
-$$\Theta=\frac{(t_1-t_0)+(t_2-t_3)}{2}$$
-
 With the knowledge of this tow variables the clock frequency is adjusted to reduce the offset.
 
-
-\chapter[General Design of the Solution]{General Design of the Solution}
+\chapter{General Design of the Solution}
  
-% something in general
+For the solution of the given problem a simple protocol was designed with a master/slave configuration where packages are transmitted
+over a local network. In the master/slave principle the master has unidirectional control over the other devices.
+The master saves timestamps when sending and receiving a package from which the roundtrip delay is calculated for every device in the system. 
 
-\section[Protocol]{Protocol}
+\section{Protocol}
 
-% working mode - sent and bing - calculate 
+In the regular working mode the master device broadcasts frequently packages to all devices in the network. These packages will be referred as "updates" 
+in the further description, because the master always updates the current roundtrip delay with each sent package. 
+All devices in the slave mode are listening for updates from a master. If a update is received from a slave the slave answers to the master immediately with a 
+package which will be referred as "answer" from now on. The master device saves a timestamp every time it broadcast or receives a package. If the master receives
+an answer package form a slave it calculates the roundtrip  delay $\delta$ and the transmission delay with the formulas:
+$$\delta=(t_4-t_1)$$
+$$\delta/2=(t_4-t_1)/2$$
+This is a simplified formula of the one which is used in most NTP implementations. The formula could be simplified because tests showed that on these 
+devices in a representative network the time span $(t_2-t_3)$ was up to 10 times smaller than the average variation in the transmission delay. 
+This time span gets even smaller if no timestamps needs to be taken on the slave device and the slave device simply pings back to the master device.
+If a synchronized event is requested the master devices broadcasts this information with the update and each slave can according to it's individual
+transmission delay initialize the event.
 
-\subsection[packages]{packages}
+\subsection{Packages}
 
-Messages:
+There are two different types of packages which are transmitted over the network. The package which is broadcasted by the master, the update, and the answer which
+is sent back to the master from the slave, the answer. Each package contains different information and based on this the message type can be identified from the 
+receiving device.
 
-Update (from master):
-The updates are broadcasted by the master periodically. Each device in the network receives the update from the master. Based on the content of the update the message is pocessed from the other device and slaves will reply. 
+\subsubsection{Update package}
 
-The update contains the folloing componentes:
+The update packages contains different information which are described in detail below. These informations are brodcasted over the network periodically. \\
 
-group ID: in the update the group ID of the master is transmitted. If the message is received from an other device first the group ID of the sender is compared to the onw group ID, if the two gorup IDs are not matching the message is not proccessed any further.
+Group ID: \\
+Within a network the devices can be grouped. This is a useful feature if you have device groups where each group should play different content but the
+content within the group needs to be played in sync. In the configuration file a group ID can be set by the user for each device. Within each group a master
+is elected who calculates the roundtrip delay for each slave within the same group. If a device receives a package from an device which is not in the same group
+the message is not processed any further. The group ID of the master is transmitted in the update. The first step a slave device does after receiving an update is 
+comparing the group ID from the sending master to the own group ID. If the group IDs are not matching the received message is not processed any further. \\
 
-force: if a device was specifyed to be master in the configuration file, this variable is set to on (otherwise it is zero). For slaves wich receive the update this parameter is not relevant. If an update is received from an other master and the group IDs are matching the each master will compare the own IP to the one from the sender and the force parmeter. Based on this comparion it is deceided wich master remains and wich one switches back to slave mode or exist (see master selection algoritm). 
+Force: \\
+A device can be specified as master device in the configuration file. If this option was set by the user this variable is set to one otherwise it is zero.
+This vale is for slaves not relevant, but if a master receives an update from an other master which is within the same group this parameter is important.
+How this parameter is processed is described in detail at the chapter master election. This parameter is important to avoid conflicts where more than
+one master occur in a system. \\
 
-prelaod ID: the preload ID indicates if a new preload request was received by the master from the controller. (See syncd - controller comunication). After the slave received the update, the slave compares the current preload ID to the preload ID he processed last, if they are not eqivalent the slave sends a preload request to the controller.
+The seconds of $t_1$ and the micro seconds of the timespamp $t_1$: \\
+Immediately before the update is broadcasted a timestamp is taken. The values of the timestamp is transmitted in the update as message ID. This message ID is
+sent back from the slave in the answer. When the timestamp is taken the function \lstinline{gettimeofday()}, which is used for the timestamps, 
+returns the type \lstinline{struct timeval}. The members of the struct \lstinline{tv_sec} and \lstinline{tv_usec} are of the type \lstinline{long int}. 
+The size of a long int depends of the architecture of the device. The type \lstinline{int} or \lstinline{unsigned int} has the same size independent from the
+architecture. Therefore the values had to be converted before they could be sent over the network. This type has the same size on all architectures, 
+but each value also has to be converted from host byte order to network byte order before it can be transmitted.
+% here a sentence why ... not architecture dependent, OS dependent
+The \lstinline{htonl()} function converts the unsigned integer hostlong from host byte order to network byte order. %this is a quote from the man page !!!
+Therefore the values from the timestamp $t_1$ are transmitted as \lstinline{unsigned int}. \\
 
-next synced content: this is implemented as an character array wich holds the sync reqeust and the fileneam of the content wich should be synced next. If the slave receives an preloadrequest in the update it writes the sync reqest hold in this string in the fifo for the controller (see comunication with controller).
+Next event in micro seconds: \\
+If the master device initializes an event the time to the event is added to the update. 
+The value is calculated by the master device for every message new till the event, this is to give a security if one message is lost or not received by the slave. 
+For this application a security factor of 3 had been chosen. The time is calculated in a way, 
+that it is ensured that each device receives at regularly 3 messages before the event is started on all nodes in the system.
+$$ Time to event = (intervalltime + max. trasmition delay) * security factor$$
+The calculated value is broadcasted with the update in microseconds as a unsigned integer.
+Each slave subtracts it's own roundtrip delay from the time till the event and starts a internal countdown. \\
 
-event ID: the event ID is similar to the preload ID, if the event ID in the update is not equal to the last processed event ID from the slave the slave knows that an event should be initialized. In this case the slave reads his roundtripdelay from the update and the delay till the event and starts a countdown.
+Array of struct device: \\
+The information about the current average transmission delay of each slave is needed in each update. 
+The information is organized in a customized struct which was called device. This struct contains an IP and an transmission delay. 
+The update contains a array of this struct, in which the individual values for each device are stored. If an event is requested, each slave searches it's own IP
+in the array after receiving the message. Each device subtracts it's own transmission delay form the time till the event. 
+The maximum number of nodes within a group is restricted with the size of this array, this restriction was set to 64.\\
 
-t1 in sec and t1 in usec: in this two variables the time when the message was sent is stored. This values are used as message ID and are read by the slave and send back in the answer. This tow values are like all the above desicribed prameters are implemnted as unsigned int. 
-The timeval struct can not be used for this becuase the members tv\_sec and tv\_usec of the struct timeval are long ints wich have diffrent sizes on diffrent architectures. If longs are send via the network between 32 and 64 bit architectures the values are not received corectlyl. 
- 
-nextevent in usec: in this variable the time till the next event is stored in microseconds. This value is calculated by the master for every message new if a event should be initialized. This makes sure if one message is lost or not received by the slave that the event still will be initialzed correct on all devices. If an event should be initialized the slave substracts his own roundtrip delay from this value and starts a countdown. 
+The preload ID: \\
+Before a event can be started the content which is requested in sync must be loaded on each device. If a new event is requested each slave first gets a 
+notification that it should load the requested content. This notification is implemented as a ID which is enhanced by one every time a new event is requested.
+The slave compares the last processed preload ID with the current one and starts notifies the player to load the requested content, if they are not equal. \\
 
-Array of struct device:
-The update also contains the current average roundtrip delay for every slave. This information is organized is a struct called device. The struct contains the IP of ervery slave and the roundtripdelay of the slave. If an event was requested the slave runs through the list and seachrch for it's own IP. After he found himself in the array he subtracts his own roundtripi delay, wich is stored in the struct on the same position in the array, from the nextevent value.
+Requested content: \\
+This is implemented as an character array which holds the sync request and the filename of the content which should be synced next. 
+If the slave receives a new preload request with the update it forwards the request hold in this string to the player. \\ 
 
-Answer (from slave):
-After the slave received an update from a master he replys to it with the answer. The master receives the answer from the slaves and calculates and stores the roundtrip delay for the slave.
+Event ID: \\
+The event ID is similar to the preload ID, if the event ID in the update is not equal to the last processed event ID the steps to initialize an event are taken. \\
 
-The answer contains the folloing componentes:
+The whole information of the package is collected in a packed struct before it is broadcasted. % if I need some more text I can here say what packed means and why !! 
+The size of this whole structure is not bigger than 0.6 kB, which is a relative small package.
 
-group ID: the slave also sends his own groupID with the message. The master first compares the group ID only if it is equal to the own group ID the messgae is pocessed further.
+\subsubsection{Answer Package}
 
-t1 in sec and t1 in usec: these two values are used as message ID, the are recevied from the master in the update and copied to the answer. The master can also use them to directly calculate the roundtrip dealy after he received the answer.
+After the slave received an update from a master it replies to it with the answer package. 
+The master receives this answer and calculates as described above the transmission delay for the slave. Over the calculated values a moving average is
+built for each slave. \\
 
-Ready ID: after the slave received a prelaodrequest he wirtes the prelaodrequest in the pipe for the cntroller. If the controller has sucessfully preloaded the video he writes ready in the pipe for the syncronisation daemon. If the slave received the ready he copyes the ID of the current preloadrequest in the ready value. The master can compare the ready from the slave to the current preload ID if they are equal the master marks the slave as ready. If all slaves are ready the event can be initialized.
+Group ID: \\
+The slave adds his own group ID to the answer package. This information is important that a master does not process information from slaves which
+are not in the same group. \\
 
-\subsection[master selection]{master selection}
+The seconds of $t_1$ and the micro seconds of the timespamp $t_1$: \\
+These two values are used as mentioned as message ID. They are received from the update and copied to the answer. 
+The master device can use this value directly to calculate the roundtrip and transmission delay, after he received the answer. \\
 
-In the network the nodes are all equal but each node has a unique IP address. For the synchronization a master is needed (for some reasons I describe somewhere else later (hopefully)) so a master election has to be part of the program. There are two ways how a master can be found for the synchronization. The first on is to set a device the master by setting the option in the configuration file or a dynamic election if no master was specified.
+Ready ID: \\
+If the slave received a prelaod request and it has notified the player, the player confirms after he has successfully loaded the requested content.
+If this confirmation arrives the slave copies the ID of the current preload request in the ready ID value. The master can compare the ready ID from the slave 
+to the current preload ID, if they are equal the master marks the slave as ready. If all slaves are ready the time till the event can be calculated and
+the event can be initialized.
 
-Master election: 
+\subsection{master election}
 
-1. The user sepcifyes a master: The user has the possibilyty to specify a master in the configuration file. This option can be useful for (I will find a reason). To specify the master the option has to be set in the configuration file. If the configruation option is set there will be no dynamic eletion of the master. If two master has been specified, the specified master with the higher IP continues as master and on the onther deivice the programms exists and the user gets an error message that only one master can be sepcified within the same group is printed on the screen.
+After the application has started in the first step a master has to be defined. 
+Therefore a master election had to be designed as part of the program. There are two ways how a master can be found. The first one is to set a device as the 
+master manually. This was implemented as a configuration option which can be set by the user in the configuration file. 
+A master also can be found with a dynamic election. The dynamic election is put to use if no master was specified.
 
-dynamic:
-f nster was specified by the user the elction of the master is dynamic. The master election is implementet that a master can be found if several devices are turned on at the exact same time and also that if deivices are added later to the system that they accept the current master or that also a specified master can be added later to the system. It is also possible to change the configuration file during the runtime, therefor a option to reconfiur had to be implemented in the programm. The algorithm also accepts a specifyed master wich was reconfigured during runtime.
+The user specifies a master: \\*
+The user has the possibility to specify a master in the configuration file. To specify the master the option has to be set in the configuration file. 
+If the configuration option is set there will be no dynamic election of the master. If two master would be specified a conflict would arise.
+To prevent errors which would arise with two specified master only one master is allowed in a system. To make sure only one master exists at any time
+within the same system one master is discarded if there are more than one. To decide which master has to be terminated the IPs of the devices are compared.
+In the system basically all nodes are equal but each node in a local network has an individual IP address.
+The specified master with the higher IP continues as master and on the other device the application terminates and an error message is printed 
+on the output for the user. The error message informs the user that only one master can be specified within the same group.
 
-GARFICS
+dynamic election of the master: \\*
+If no master was specified by the user the election of the master is dynamic. The master election is implemented that a master can be found if 
+several devices are turned on at the exact same time and also that if devices are added later to the system that they accept the current master.
+Or that also a specified master can be added later to the system. It is also possible to change the configuration file during the runtime. 
+Therefor a option to reconfigure had to be implemented in the program. The algorithm also accepts a specified master which was reconfigured during runtime.
 
-When the program starts the configuration are read (mention shared library). If in the configuration file the device was specifeid as master. The program starts in master mode and sets the global varibale b\_force to 1. This variable is also included in the ubpdates wich are send. If the device was not sepcifyed as master the program starts in slave mode and waits for updates. If a update was received from a master with the same group ID an answer message is sent. If no update is received for some time (witch is defined as L\_INT\_WAITTIME) the slave mode exists. The master and slave mode are implemented as functions wich are called by  the main function, each mode contains a infinite loop from wich is braked out if a stop siganl, like in the case of the slave function no message received, is received. Befor the function returns all allocated memory is freed by a cleanup handler. In the main function the next mode is called after one mode returned. This is also implemented in a infinite loop so that a slave wich became master can become slave again if for example an ohter master wich was specified by the user accous. If the master function returns all threads wich where called in the fucntion terminate and clean up the memory the allocated and unlock all mutexes they held. After all threads exited the function reurns. If the master was a dynamic elected master he starts in slave mode, if the master was already a specifyed master and the function exited because an other specified master within the same group and an higher IP accourd the program exists after the functin returnd. Also a error message is print to the display and the log, wich informs the user that two specified master are currently in the system.
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{master-election}
+
+\subsubsection[Implementation of the master election]{Implementation of the master election}
+
+When the program starts the configuration file is read. If in the configuration option is set that the device should be the master, 
+the program starts as master and the global varibale b\_force is set to 1. This variable is also included in the updates which are broadcasted over the network. If the device was not sepcifyed as master the program starts in slave mode and waits for updates. If a update was received from a master with the same group ID an answer message is sent. If no update is received for some time (witch is defined as L\_INT\_WAITTIME) the slave mode exists. The master and slave mode are implemented as functions wich are called by  the main function, each mode contains a infinite loop from wich is braked out if a stop siganl, like in the case of the slave function no message received, is received. Befor the function returns all allocated memory is freed by a cleanup handler. In the main function the next mode is called after one mode returned. This is also implemented in a infinite loop so that a slave wich became master can become slave again if for example an ohter master wich was specified by the user accous. If the master function returns all threads wich where called in the fucntion terminate and clean up the memory the allocated and unlock all mutexes they held. After all threads exited the function reurns. If the master was a dynamic elected master he starts in slave mode, if the master was already a specifyed master and the function exited because an other specified master within the same group and an higher IP accourd the program exists after the functin returnd. Also a error message is print to the display and the log, wich informs the user that two specified master are currently in the system.
 
 
 \chapter[implementation]{Implementation}
