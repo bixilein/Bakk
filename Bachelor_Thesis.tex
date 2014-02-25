@@ -221,8 +221,8 @@ The MPX has the following specifications:
     \item CPU: 720 MHz
     \item RAM: 256MB@360MHz
     \item Flash 1MB to 8MB
-    \item 32MB @ SD-Card
-\end{itemize}\\*
+    \item 32MB @ SD-Card 
+\end{itemize}
 The company got the request form several of their customers that they would like to synchronize events on devices which are connected in a local network. 
 This feature was requested for example to start videos in sync on monitors which are accessed by different microcontrollers. 
 So the company searched for a possibility to meet the needs of the costumer and synchronize different devices. It also had to be consider the resources available 
@@ -317,20 +317,20 @@ receiving device.
 
 The update packages contains different information which are described in detail below. These informations are brodcasted over the network periodically. \\
 
-Group ID: \\
+\textbf{Group ID:} \\
 Within a network the devices can be grouped. This is a useful feature if you have device groups where each group should play different content but the
 content within the group needs to be played in sync. In the configuration file a group ID can be set by the user for each device. Within each group a master
 is elected who calculates the roundtrip delay for each slave within the same group. If a device receives a package from an device which is not in the same group
 the message is not processed any further. The group ID of the master is transmitted in the update. The first step a slave device does after receiving an update is 
 comparing the group ID from the sending master to the own group ID. If the group IDs are not matching the received message is not processed any further. \\
 
-Force: \\
+\textbf{Force:} \\
 A device can be specified as master device in the configuration file. If this option was set by the user this variable is set to one otherwise it is zero.
 This vale is for slaves not relevant, but if a master receives an update from an other master which is within the same group this parameter is important.
 How this parameter is processed is described in detail at the chapter master election. This parameter is important to avoid conflicts where more than
 one master occur in a system. \\
 
-The seconds of $t_1$ and the micro seconds of the timespamp $t_1$: \\
+\textbf{The seconds of $t_1$ and the micro seconds of the timespamp $t_1$:} \\
 Immediately before the update is broadcasted a timestamp is taken. The values of the timestamp is transmitted in the update as message ID. This message ID is
 sent back from the slave in the answer. When the timestamp is taken the function \lstinline{gettimeofday()}, which is used for the timestamps, 
 returns the type \lstinline{struct timeval}. The members of the struct \lstinline{tv_sec} and \lstinline{tv_usec} are of the type \lstinline{long int}. 
@@ -341,7 +341,7 @@ but each value also has to be converted from host byte order to network byte ord
 The \lstinline{htonl()} function converts the unsigned integer hostlong from host byte order to network byte order. %this is a quote from the man page !!!
 Therefore the values from the timestamp $t_1$ are transmitted as \lstinline{unsigned int}. \\
 
-Next event in micro seconds: \\
+\textbf{Next event in micro seconds:} \\
 If the master device initializes an event the time to the event is added to the update. 
 The value is calculated by the master device for every message new till the event, this is to give a security if one message is lost or not received by the slave. 
 For this application a security factor of 3 had been chosen. The time is calculated in a way, 
@@ -350,23 +350,23 @@ $$ Time to event = (intervalltime + max. trasmition delay) * security factor$$
 The calculated value is broadcasted with the update in microseconds as a unsigned integer.
 Each slave subtracts it's own roundtrip delay from the time till the event and starts a internal countdown. \\
 
-Array of struct device: \\
+\textbf{Array of struct device:} \\
 The information about the current average transmission delay of each slave is needed in each update. 
 The information is organized in a customized struct which was called device. This struct contains an IP and an transmission delay. 
 The update contains a array of this struct, in which the individual values for each device are stored. If an event is requested, each slave searches it's own IP
 in the array after receiving the message. Each device subtracts it's own transmission delay form the time till the event. 
 The maximum number of nodes within a group is restricted with the size of this array, this restriction was set to 64.\\
 
-The preload ID: \\
+\textbf{The preload ID:} \\
 Before a event can be started the content which is requested in sync must be loaded on each device. If a new event is requested each slave first gets a 
 notification that it should load the requested content. This notification is implemented as a ID which is enhanced by one every time a new event is requested.
 The slave compares the last processed preload ID with the current one and starts notifies the player to load the requested content, if they are not equal. \\
 
-Requested content: \\
+\textbf{Requested content:} \\
 This is implemented as an character array which holds the sync request and the filename of the content which should be synced next. 
 If the slave receives a new preload request with the update it forwards the request hold in this string to the player. \\ 
 
-Event ID: \\
+\textbf{Event ID:} \\
 The event ID is similar to the preload ID, if the event ID in the update is not equal to the last processed event ID the steps to initialize an event are taken. \\
 
 The whole information of the package is collected in a packed struct before it is broadcasted. % if I need some more text I can here say what packed means and why !! 
@@ -378,49 +378,84 @@ After the slave received an update from a master it replies to it with the answe
 The master receives this answer and calculates as described above the transmission delay for the slave. Over the calculated values a moving average is
 built for each slave. \\
 
-Group ID: \\
+\textbf{Group ID:} \\
 The slave adds his own group ID to the answer package. This information is important that a master does not process information from slaves which
 are not in the same group. \\
 
-The seconds of $t_1$ and the micro seconds of the timespamp $t_1$: \\
+\textbf{The seconds of $t_1$ and the micro seconds of the timespamp $t_1$:} \\
 These two values are used as mentioned as message ID. They are received from the update and copied to the answer. 
 The master device can use this value directly to calculate the roundtrip and transmission delay, after he received the answer. \\
 
-Ready ID: \\
+\textbf{Ready ID:} \\
 If the slave received a prelaod request and it has notified the player, the player confirms after he has successfully loaded the requested content.
 If this confirmation arrives the slave copies the ID of the current preload request in the ready ID value. The master can compare the ready ID from the slave 
 to the current preload ID, if they are equal the master marks the slave as ready. If all slaves are ready the time till the event can be calculated and
 the event can be initialized.
 
-\subsection{master election}
+\subsection{Master Election}
 
-After the application has started in the first step a master has to be defined. 
-Therefore a master election had to be designed as part of the program. There are two ways how a master can be found. The first one is to set a device as the 
-master manually. This was implemented as a configuration option which can be set by the user in the configuration file. 
-A master also can be found with a dynamic election. The dynamic election is put to use if no master was specified.
+After the application has started in the first step a master has to be defined. In the network all nodes are equal and similar to each other but each one
+has a unique IP address. A master device has to be elected within the system. Therefore a master election had to be designed as part of the program. 
+There are two ways how a master can be found in this application. The first one is to set a device as the master manually. 
+This can be done with an configuration option, which can be set by the user in the configuration file. The other way to find a master in the network is
+a dynamic election. The dynamic election is put to use if no master was specified in a system. \\
 
-The user specifies a master: \\*
-The user has the possibility to specify a master in the configuration file. To specify the master the option has to be set in the configuration file. 
-If the configuration option is set there will be no dynamic election of the master. If two master would be specified a conflict would arise.
-To prevent errors which would arise with two specified master only one master is allowed in a system. To make sure only one master exists at any time
-within the same system one master is discarded if there are more than one. To decide which master has to be terminated the IPs of the devices are compared.
-In the system basically all nodes are equal but each node in a local network has an individual IP address.
+\textbf{The user specifies a master:} \\*
+The user has the possibility to specify a master in the configuration file. To specify the master the correlating option has to be set in the configuration file. 
+If this configuration option is set to true there will be no further dynamic election of any master in the system. 
+If two master would be specified a conflict would arise. To prevent errors which would arise with two specified master only one master is allowed in a system. 
+To make sure only one master exists at any time within the same system one master is discarded if there are more than one. 
+To decide which master has to be terminated the IPs of the devices are compared.
 The specified master with the higher IP continues as master and on the other device the application terminates and an error message is printed 
-on the output for the user. The error message informs the user that only one master can be specified within the same group.
+on the output screen for the user. The error message informs the user that only one master can be specified within the same group and asks the user to check
+the configurations. \\
 
-dynamic election of the master: \\*
-If no master was specified by the user the election of the master is dynamic. The master election is implemented that a master can be found if 
-several devices are turned on at the exact same time and also that if devices are added later to the system that they accept the current master.
-Or that also a specified master can be added later to the system. It is also possible to change the configuration file during the runtime. 
-Therefor a option to reconfigure had to be implemented in the program. The algorithm also accepts a specified master which was reconfigured during runtime.
-
-\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{master-election}
+\textbf{Dynamic election of the master:} \\*
+If no master was specified by the user the election of the master is dynamic and automatically by the program. 
+When the master election was implemented all situations how devices can be added to the network had to be considered. 
+The following scenarios where considered when designing the dynamic election: \\
+\begin{itemize}
+    \item only one device is in the system 
+    \item a device gets added to a system with a already existing master
+    \item the master device in the system is shut down
+    \item a device which is specified as master gets added to a network with a dynamic elected master
+    \item a slave device is reconfigured as master during the run time in the network 
+    \item several devices are added to a system with no master at the exact same time, for example after a blackout
+\end{itemize}
 
 \subsubsection[Implementation of the master election]{Implementation of the master election}
 
-When the program starts the configuration file is read. If in the configuration option is set that the device should be the master, 
-the program starts as master and the global varibale b\_force is set to 1. This variable is also included in the updates which are broadcasted over the network. If the device was not sepcifyed as master the program starts in slave mode and waits for updates. If a update was received from a master with the same group ID an answer message is sent. If no update is received for some time (witch is defined as L\_INT\_WAITTIME) the slave mode exists. The master and slave mode are implemented as functions wich are called by  the main function, each mode contains a infinite loop from wich is braked out if a stop siganl, like in the case of the slave function no message received, is received. Befor the function returns all allocated memory is freed by a cleanup handler. In the main function the next mode is called after one mode returned. This is also implemented in a infinite loop so that a slave wich became master can become slave again if for example an ohter master wich was specified by the user accous. If the master function returns all threads wich where called in the fucntion terminate and clean up the memory the allocated and unlock all mutexes they held. After all threads exited the function reurns. If the master was a dynamic elected master he starts in slave mode, if the master was already a specifyed master and the function exited because an other specified master within the same group and an higher IP accourd the program exists after the functin returnd. Also a error message is print to the display and the log, wich informs the user that two specified master are currently in the system.
+The basic principle for the master election is that a devices switches in master mode if no master is in the system. If two masters occur in the same
+system the IP addresses of the two masters are compared and the device with happens to have the higher IP remains as only master. The master
+election was designed that the already defined package types, which are necessary for the regular work mode, could be used. \\*
 
+When the application is started the configuration file is read. If in the configuration option is set that the device should be the master, 
+the program starts as master and a global variable \lstinline{b_force} is set to one. This variable is also included in the updates which are broadcasted 
+over the network. If the device was not specified as master the program starts in slave mode and listens for updates. 
+If a update is received from a master with the same group ID an answer package is sent. 
+If no update is received for a defined time period the device becomes a master. The time how long the slave waits for an update is defined as
+\lstinline{L_INT_WAITTIME}, and set in this application to 3 seconds. \\
+
+The master and slave mode are implemented as functions which are called by  the main function, each mode contains a infinite loop from which is braked out 
+if the stop signal is set. \\
+The stop signal is set in the following situations:
+\begin{itemize}
+    \item the slave function does not receive an update
+    \item if a dynamic elected master received an update from a specified master  
+    \item if a specified master received an update from a specified master with an higher IP
+    \item if a dynamic elected master received an update from a other dynamic elected master with an higher IP
+\end{itemize}
+
+Before the function returns all allocated memory is freed by a cleanup handler. In the main function the next mode/function is called after a mode returned. 
+This is also implemented in a infinite loop so that a slave which became master can become a slave again. For example when a other master which was specified 
+by the user is added to the system. Before the master function returns all threads which where called in the function are terminate and the in each thread the
+allocated memory is freed and the mutex variables which are hold currently by the thread are unlocked.
+After all threads exited the function returns. If the master was a dynamic elected master he starts in slave mode, 
+if the master was already a specified one a error message informs the user that two specified master are currently in the system and the application terminates.
+
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{master-election}
+
+\subsection{Final design of the Protocol}
 
 \chapter[implementation]{Implementation}
 
