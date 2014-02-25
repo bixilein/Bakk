@@ -40,6 +40,8 @@
 \usepackage{listings} %package for code
 \lstset{language=C, basicstyle=\footnotesize}
 
+\usepackage{multicol} %columns
+
 \usepackage{helvet}
 \renewcommand{\familydefault}{cmss}
 
@@ -52,7 +54,7 @@
 \setlength{\textheight}{225mm}
 \setlength{\textwidth}{1.05\textwidth}
 
-\DeclareGraphicsExtensions{.jpg}
+\DeclareGraphicsExtensions{.jpg, .png}
 
 \tolerance = 9999
 \sloppy
@@ -456,6 +458,58 @@ if the master was already a specified one a error message informs the user that 
 \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{master-election}
 
 \subsection{Final design of the Protocol}
+
+In the following section it is shown how the final design of the protocol combines the regular work mode with the master election and how
+the different package types are used. Therefore the protocol was visualized with a message sequence chart. 
+The purpose of a MSC (Message Sequence Chart) is to provide a language to specify and describe the communication behavior of system components 
+and their environment by means of message interchange. % direct wiki quote !!!
+To visualize the protocol with a MSC also was an necessary and important step to design the application, because through the visualizing conflicts
+which could occur are pointed out.
+
+\newpage
+
+\begin{multicols}{2}
+
+\includegraphics[width=0.45\textwidth,trim = 0mm 20mm 0mm 0mm,clip,keepaspectratio]{workingmode1.png} \\ \\
+
+When the devices is added to a system it starts in slave mode. Here it can been seen that device B is in the 
+begin the only device in the system. After some time the devices A, C and D are also switched on. In the
+slave mode the application is waiting for an update from a master. 
+
+If no update is received in the slave mode the device switches to the master mode. Here the device B switches
+at first in the master mode, because it was started at first and the timeout for waiting for an update is
+already over on this device. In the master mode the device starts to broadcast updates to each node in 
+the network. The other devices stay in save mode because an update was received. Each device pings back to
+the master device.
+
+When the device is taken off the network which was dynamically elected as master, no more updates are broadcasted
+over the network. In this case the device B is removed from the system. After no update was received all the
+remaining devices switch in the master mode. Here it can be seen that device A, C and D are now in the master mode.
+After a master receives a master message it compares it's own IP to the one from the other master. If the own
+IP is lower it switches back to slave mode again. In this example, device C and D turn into slaves again, A 
+remains the master and continues broadcasting updates.
+
+If a devices is added to a network where there is already a master it just starts to answer to the received
+updates. In this case device B is turned on again an is now a slave node.
+
+If a slave node is taken off the network, it can't reply anymore to updates. The master device deletes 
+a slave device which is not responding for a period from it's intern list.
+
+\end{multicols}
+
+\newpage
+
+\begin{multicols}{2}
+\includegraphics[width=0.45\textwidth,keepaspectratio]{workingmode2.png} \\ \\ \\
+
+If a device is added to a system where already a dynamically elected master exists, the specified master starts
+to broadcast updates, where the information that it is a forced master is contained in the update. The other 
+master reads this information, if it receives an update from an master and switches in slave mode and starts to
+respond to the new master. Also all the other devices start to respond to the new master.
+\end{multicols}
+
+With this design of the protocol only two types of packages are needed and both the dynamical as the manual election of a master device is integrated in
+the regular working mode.
 
 \chapter[implementation]{Implementation}
 
