@@ -1,0 +1,54 @@
+\begin{thebibliography}{xx}
+
+% The Illustrated Network Book 
+\harvarditem{Goralski}{2009}{UTP-book}
+Goralski, W., 2009. {\em The Illustrated Network}.
+  3{\edition}. Burlington: Morgan Kaufmann Publishers.
+
+% Advantages of C 
+\harvarditem{Burgess}{2002}{adventagesC}
+Burgess, M., 2002. {\em The GNU C Programming Tutorial}.
+  4.1{\edition}. Oslo: Free Software Foundation, Inc.
+
+% NTP general
+\harvarditem{{NTP - The Network Time Protocol}}{2014}{NTP}
+{NTP - The Network Time Protocol}, 2014. {\em {NTP - The Network Time Protocol}}. 
+{\lbrack}{online}{\rbrack \ }Delaware, U.S.: University of Delaware.
+{\acessedthrough} <\url{http://www.ntp.org}> [{\acessedat} 26.2.2014].
+
+% NTP distro
+\harvarditem{{The Network Time Protocol (NTP) Distribution}}{2011}{NTP1}
+{The Network Time Protocol (NTP) Distribution}, 2011. {\em {The Network Time Protocol (NTP) Distribution}}. 
+{\lbrack}{online}{\rbrack }
+{\acessedthrough} <\url{http://www.eecis.udel.edu/~mills/ntp/html/index.html}> [{\acessedat} 11.1.2014].
+
+% sync general with nice ofset graphic 
+\harvarditem{Mills}{1991}{sync}
+Mills, D.L, 1991.
+{\em Internet Time Synchronizaton}. 
+{\lbrack}Paper{\rbrack \ }xxxx: IEEE.
+
+% sync general paper
+\harvarditem{Lenzen, Thomas, Locher, Sommer {\harvardand} Wattenhofer}{20xx}{sync1}
+Lenzen, C., Locher, T., Sommer, P., {\harvardand} Roger Wattenhofer, R.,
+20xx. {\em Clock Synchronization: Open Problems in Theory and Practice}. 
+{\lbrack}Thesis{\rbrack \ }Swizerland: ETH Zurich.
+
+%socket main info
+\harvarditem{iOS Developer Library}{2013}{socket}
+iOS Developer Library, 2013.
+{\em Networking Programming Topics - Using Sockets and Socket Streams}, {\lbrack}{online}{\rbrack}.
+{\acessedthrough} <\url{https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/NetworkingTopics/Articles/UsingSocketsandSocketStreams.html}> [{\acessedat}
+  24.8.2011].
+
+%socket general
+\harvarditem{{About Computing}}{2014}{socket1}
+{About.com}, 2014. {\em {Network Programming - Windows, Unix and Socket}}. 
+{\lbrack}{online}
+{\acessedthrough}
+  <\url{http://compnetworking.about.com/od/networkprogramming}>
+  [{\acessedat} 20.2.2014].
+
+
+
+\end{thebibliography}
