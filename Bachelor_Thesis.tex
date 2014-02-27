@@ -1,4 +1,4 @@
-% mention somewhere the size of int, double thing on different devices, thats why timeval has not been used
+% !!! A socket provides a bidirectional communication endpoint for sending and receiving data with another socket.
 
 
 % !TEX encoding = IsoLatin2
@@ -511,17 +511,61 @@ respond to the new master. Also all the other devices start to respond to the ne
 With this design of the protocol only two types of packages are needed and both the dynamical as the manual election of a master device is integrated in
 the regular working mode.
 
-\chapter[implementation]{Implementation}
+\chapter{Implementation}
 
-\section[communication]{communication UTP}
+% quotes from adventagesC 
+The application was implemented in the programing language C. C is especially good for programming with limited resources, the language is very close
+to the machine and therefor specially suited for microcontrollers. With C every resource a computer offers can be used. C is also the language which is currently most used to program UNIX systems, for example most of the GNU project is written in C. Also an other main advantage of C is the speed of the resulting application, C
+code can be optimized much more than higher-level languages and the language set is very efficient. % !!!direct quote wiki.answers.com/Q/What_is_the_advantage_of
+%_c_language. 
+C is a very powerful programming language, it is best used for data structures and designing system software. % !!!direct quote iimchyderabad.com/Material/cnotes.pdf
 
-The User Datagram Protocol (UDP) a application can send messages to other devices.
-UDP uses a simple transission model with a miniumum of protocol mechanism. 
-It has no handshaking dialogures, therefore ther is no garantee of delivery, ordering, or duplicate protection. 
-UDP is suitable for purposes where error checking and correction is either not necessary or performed in the application. Time-sensetive applications often use UDP because dropping packets is perferable to waiting for a delayed packet. 
-If error correction facilityeis are needed at the network interface level, the Transmission Control Protocol (TCP) or Stream Control Transmission Protocol (SCTP) can be used because they are desigend for that purpose. 
-But form the requirements form this project it is clear that UDP suites best for this application. 
-Ther also other attributes wich make ist suited for this application, it is transacion-oriented, wich make it suitabel for simpllle protocols, it is stateless which makes it suitable for very large numbers of cliens and the like already mentioned th lack of retranzsmission delays makes it suitable for real-time applicaticaton and it is suitable for broadcasting information.
+\section{Communication UTP}
+
+% all qutes from the Illustrated network 
+For transmitting the so far described package the User Datagram Protocol was used.
+The User Datagram Protocol (UTP) is a transport layer  protocol that rides on top of IPv4 or IPv6, that enables sending messages between devices over a network.
+UDP uses a very simple transmission model and provides only a minimal protocol mechanism. It does not provide any control mechanisms, therefore there is no guarantee 
+of the delivery of the packages. There is also no guarantee for the order in which the messages arrive and also no duplicate protection.
+UTP is used for application where error checking and correction is not necessary or done by the application, which uses it, itself.
+If error checking is needed at the network interface level other protocols like the Transmission Control Protocol (TCP) or the Stream Control Transmission 
+Protocol (SCTP) must be used. Tu sum it up, UDP is a low-overhead transport for applications that do not need guaranteed delivery like provided by TCP.
+The advantages of UDP lie in it's simplicity, the simple operation of UTP make it fast and therefor ideal for delay-sensitive traffic.
+Time-sensitive application could suffer from waiting for all the overhead that TCP requires to set up a connection between hosts before sending a message.
+Also for time-sensitive application dropping packages is preferable to waiting for delayed messages.
+UTP is transaction-oriented which makes it most suitable for simple protocols. UTP is also stateless what allows a very large number of clients.
+It is also suitable for broadcasting information.
+
+For this project one of the main advantage was the lack of delivery control mechanism and the resulting speed of the Protocol.
+Therefore in the event synchronization application the communication between the devices is established with the User Datagram Protocol (UDP), 
+
+\subsection{Prepare connection}
+
+In order for the application to be able to send and receive UTP packets an interface between the application and the network is necessary, this is 
+provided by so called sockets. The application creates the socket, where the socket type defines the communication type, 
+UTP for example uses \lstinline{SOCK_DGRAM} sockets. A socket is a bidirectional communication endpoint which can transmit or receive data from an other socket. \\
+
+To set up a sockets for communication the following steps must be performed in the code:
+\begin{itemize}
+    \item Creating a socket by calling \lstinline{socket()},
+    \item Binding the socket by calling \lstinline{bind()} and provide a \lstinline{struct sockaddr} in which the family and port which sound be used are defined
+\end{itemize}
+    
+When transmitting packets with UTP the connection is not established before sending the message. The client for example sends a packet with 
+\lstinline{sendto()} without connecting first to the server, when UTP is used the server also does not accept a connection, the server immediately calls
+\lstinline{recvfrom()} and waits for any data. In a bidirectional communication like accomplished with the above outlined commands the sever and the client can 
+send and receive packages.
+
+\subsubsection{Broadcast messages}
+
+For the application it is necessary not only to send packages between two devices, it is also needed to broadcast information. For example the updates from
+the master should be broadcasted. When messages are broadcasted, each device in the network receives the message without being addressed.
+
+
+
+%broadcasting and calculating broadcast address
+
+%steps: create a udp socket, get/claculate the address, REUSEADDR, bind, setsocketopt, sendto, recvfrom
 
 \section[Master-mode]{Master-mode}
 
