@@ -38,7 +38,7 @@ Lenzen, C., Locher, T., Sommer, P., {\harvardand} Roger Wattenhofer, R.,
 \harvarditem{iOS Developer Library}{2013}{socket}
 iOS Developer Library, 2013.
 {\em Networking Programming Topics - Using Sockets and Socket Streams}, {\lbrack}{online}{\rbrack}.
-{\acessedthrough} <\url{https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/NetworkingTopics/Articles/UsingSocketsandSocketStreams.html}> [{\acessedat}
+{\acessedthrough} <\url{https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/NetworkingTopics/Articles/UsingSocketsandSocketStreams.html#//apple_ref/doc/uid/CH73-SW12}> [{\acessedat}
   24.8.2011].
 
 %socket general
@@ -49,6 +49,12 @@ iOS Developer Library, 2013.
   <\url{http://compnetworking.about.com/od/networkprogramming}>
   [{\acessedat} 20.2.2014].
 
+%broadcast address
+\harvarditem{{Anglia Ruskin University Library}}{2010}{Anglia10}
+{Anglia Ruskin University Library}, 2010. {\em {Guide to the Harvard Style of
+  Referencing}}. 2{\edition}. {\lbrack}{online}{\rbrack \ }Cambridge, UK:
+  Anglia Ruskin University.
+{\acessedthrough} <\url{http://technet.microsoft.com/en-us/library/dd469716(v=ws.10).aspx}> [{\acessedat} 6.7.2011].
 
 
 \end{thebibliography}

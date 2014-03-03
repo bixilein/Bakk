@@ -42,6 +42,8 @@
 
 \usepackage{multicol} %columns
 
+\usepackage{lscape} %make a page landscape
+
 \usepackage{helvet}
 \renewcommand{\familydefault}{cmss}
 
@@ -54,7 +56,7 @@
 \setlength{\textheight}{225mm}
 \setlength{\textwidth}{1.05\textwidth}
 
-\DeclareGraphicsExtensions{.jpg, .png}
+\DeclareGraphicsExtensions{.jpg, .png, .gif}
 
 \tolerance = 9999
 \sloppy
@@ -448,6 +450,10 @@ The stop signal is set in the following situations:
     \item if a dynamic elected master received an update from a other dynamic elected master with an higher IP
 \end{itemize}
 
+\begin{center}
+\includegraphics[width=0.35\textwidth,keepaspectratio]{main}
+\end{center}
+
 Before the function returns all allocated memory is freed by a cleanup handler. In the main function the next mode/function is called after a mode returned. 
 This is also implemented in a infinite loop so that a slave which became master can become a slave again. For example when a other master which was specified 
 by the user is added to the system. Before the master function returns all threads which where called in the function are terminate and the in each thread the
@@ -530,50 +536,200 @@ of the delivery of the packages. There is also no guarantee for the order in whi
 UTP is used for application where error checking and correction is not necessary or done by the application, which uses it, itself.
 If error checking is needed at the network interface level other protocols like the Transmission Control Protocol (TCP) or the Stream Control Transmission 
 Protocol (SCTP) must be used. Tu sum it up, UDP is a low-overhead transport for applications that do not need guaranteed delivery like provided by TCP.
-The advantages of UDP lie in it's simplicity, the simple operation of UTP make it fast and therefor ideal for delay-sensitive traffic.
+The advantages of UDP lies in it's simplicity, the simple operations of UTP make it fast and therefor ideal for delay-sensitive traffic.
 Time-sensitive application could suffer from waiting for all the overhead that TCP requires to set up a connection between hosts before sending a message.
 Also for time-sensitive application dropping packages is preferable to waiting for delayed messages.
 UTP is transaction-oriented which makes it most suitable for simple protocols. UTP is also stateless what allows a very large number of clients.
 It is also suitable for broadcasting information.
 
 For this project one of the main advantage was the lack of delivery control mechanism and the resulting speed of the Protocol.
-Therefore in the event synchronization application the communication between the devices is established with the User Datagram Protocol (UDP), 
+Therefore in the event synchronization application the communication between the devices is established with the User Datagram Protocol (UDP). 
 
 \subsection{Prepare connection}
 
 In order for the application to be able to send and receive UTP packets an interface between the application and the network is necessary, this is 
-provided by so called sockets. The application creates the socket, where the socket type defines the communication type, 
+provided by so called sockets. The application creates the socket, where the socket type defines the communication typ. 
 UTP for example uses \lstinline{SOCK_DGRAM} sockets. A socket is a bidirectional communication endpoint which can transmit or receive data from an other socket. \\
 
 To set up a sockets for communication the following steps must be performed in the code:
 \begin{itemize}
-    \item Creating a socket by calling \lstinline{socket()},
-    \item Binding the socket by calling \lstinline{bind()} and provide a \lstinline{struct sockaddr} in which the family and port which sound be used are defined
+    \item Creating a socket/an endpoint for communication by calling \lstinline{socket()}
+    \item Assining a address to the created socket by binding the socket with calling \lstinline{bind()} 
+        and provide a \lstinline{struct sockaddr} in which the family and port are defined
 \end{itemize}
     
+When implementing a connection with UDP the device can be implemented as server or as client.
+The communication accomplished with the above outlined commands is a bidirectional that means, both the sever and the client can 
+send and receive packages. For the event synchronization the master function was implemented as server and the slave function is implanted as client.
+The application is designed so that there is always one master and up to 64 slaves, therefore there is always one server and a variable number of clients
+in the communication.
+
 When transmitting packets with UTP the connection is not established before sending the message. The client for example sends a packet with 
-\lstinline{sendto()} without connecting first to the server, when UTP is used the server also does not accept a connection, the server immediately calls
-\lstinline{recvfrom()} and waits for any data. In a bidirectional communication like accomplished with the above outlined commands the sever and the client can 
-send and receive packages.
+\lstinline{sendto()} without connecting first to the server, when UTP is used the server also does not accept a connection, it immediately calls
+\lstinline{recvfrom()} and waits for any data. The following graphic shows a model of server client communication.
+
+\begin{center}
+\includegraphics[width=0.3\textwidth,keepaspectratio]{server-client.jpg}
+\end{center}
+
+When the socket should not be assigned to one particular address and instead watch out for all messages which are transmitted to this node over the network,
+the member \lstinline{s_svadr.sin_addr.s_addr} must be set to \lstinline{INADDR_ANY}. A socket also can be bound to the broadcast address and that receives
+all messages which are broadcasted over the network.
 
 \subsubsection{Broadcast messages}
 
 For the application it is necessary not only to send packages between two devices, it is also needed to broadcast information. For example the updates from
-the master should be broadcasted. When messages are broadcasted, each device in the network receives the message without being addressed.
+the master should be broadcasted. When messages are broadcasted, each device in the network receives the message without being addressed. To broadcast
+messages over the network first the broadcast address needs to be calculated. 
+Each device which uses the IP Protocol for communication needs a unique identifier, the so called IP address. With this identifier each device on the network can
+be address individually. An IPv4 address is a 32-Bit value which contains to components the network ID and the host ID.
+
+%here are quotes for the broadcast things ... look it up in the *.bbl !!!
+%if I really need something to fill the pages I can explain the concept in detail with all the human readable aspects and blahhhhhhh
+The IPv4 Protocol which is used in this application uses a set of broadcast addresses to provide the above described one to 
+everyone transmission. The network broadcast address can be calculated by setting all the bits of the Host ID part to one.
+For getting the broadcast address of a network in a application the device performs a bitwise "and" operation over it's own IP address and 
+mask where all the host-bits are set to 1. The graphic shows the operation how a broadcast address is formed.
+% graphic form http://www.ehow.com/how_5175490_calculate-broadcast-address.html %it is a complete useless graphic but I need something to fill pages !!!
+
+\begin{center}
+\includegraphics[width=0.35\textwidth,keepaspectratio]{broadcast.jpg}
+\end{center}
+
+% one more quote from the main page !!!
+When messages are broadcasted, the socket has to be configured, after it was created and bound to the interface, to enable broadcasting. 
+This can be done in the code with \lstinline{setsockopt(int sockfd, int level, int optname, const void * optval, socklen_t optlen);} what manipulate options for 
+the socket referred to by the file descripter \lstinline{sockfd}. When manipulating the socket options, the level at which the option resides and the name of
+the option must be specified, for this application the level had to be specified as \lstinline{SOL_SOCKET} and the name of the option which had to be set to one is 
+\lstinline{SO_BROADCAST}.
+
+% reuse address
+An other socket option has to be set, that indicates that the addresses supplied in a \lstinline{bind()} call should allow reuse of local addresses.
+This option is set with \lstinline{setsockopt()} and the name of the option is \lstinline{SO_REUSEADDR}. 
+
+\section{Master-mode}
+
+As long as a device is the master device the program loops in the master function. The master function has to perform the listed tasks:
+\begin{itemize}
+    \item periodically prepare and broadcast updates
+    \item receive and process response packages from the slaves
+    \item calculate the moving average of the roundtrip delay for each slave device 
+    \item check if all devices still active in the system or if one was taken off the network 
+    \item communicate with the player
+    \item initialize a event if necessary
+\end{itemize}
+
+\subsection{Threads}
+
+The function for the master mode was implemented as a multi thread application.
+% https://computing.llnl.gov/tutorials/pthreads/#Thread
+A thread is a independent stream of instructions that can be scheduled to run as such by the operating system. % direct quote !!!
+Multiple threads simplified can be seen as a lightweight versions of a  set of processes. 
+A thread is a procedure that runs independently from the main routine and other threads.
+If a program is implemented as a  multi thread program, it can be described as a number of procedures, which run simultaneously.
+Each thread acts like its an individual program, with the expiation that all the threads work in the same memory space. 
+
+%http://www.cs.cf.ac.uk/Dave/C/node29.html#SECTION002910000000000000000
+Multithreading can have many benifits for a apllication, some of that are pointed out at "Quelle":
+\begin{itemize}
+    \item Improve the responsiveness, in a program in which activities not dependent on each other can be redesigned so that each activity is defined as a thread. 
+    For example, the user of a multithreaded GUI does not have to wait for one activity to complete before starting another.
+    \item Improve program structure, many programs are more efficiently structured as multiple independent units of execution instead of as a single thread. 
+    Multithreaded programs can be more adaptive to variations in user demands than single threaded programs.
+    \item Use fewer system resources, programs that use multiple processes need more resources, 
+    because each process has a full address space and operating systems state. Creating a thread instead of a process saves time and space.
+% form http://www.cs.iit.edu/~cs561/cs450/ChilkuriDineshThreads/dinesh's%20files/Advantages%20and%20disadvantages.html 
+    \item Threads can share data and therefor they do not need interprocess communication, like it would be necessary if multiple process are used for the same task.
+% from http://www.zdv.uni-mainz.de/cms-extern/DUS/progtool/dce31unx/develop/appdev/Appde153.htm
+    \item Using threads improves the performance of a programm, it raises the computiation speed of the application.
+    \item Multiple threads are most used in mulitprocessor system but using threads can also improve application on single processor devices 
+    by permitting the overlap of input and output or other slow operations.
+\end{itemize}
+
+% http://www.albahari.info/threading/threading.pdf = nice source, but I haven't used it so far
+To create a new thread the function % quotes from the main page !!!
+\begin{lstlisting}
+int pthread_create(pthread_t *thread, const pthread_attr_t *attr, 
+                   void *(*start_routine) (void *), void *arg);
+\end{lstlisting}
+from the \lstinline{pthread.h} header has to be called. The new thread starts execution by invoking \lstinline{start_routine()}, 
+\lstinline{void *arg} is passed as argument to the \lstinline{start_routine()}. \\*
+
+If a thread is stared the function 
+\begin{lstlisting}
+int pthread_join(pthread_t thread, void **retval);
+\end{lstlisting}
+waits for the thread specified by \lstinline{thread} to terminate.
+
+\subsubsection{Mutual exclusion}
+
+% something about muetx, why it is needed and how it works, just in general, but I really don't feel like doing that now
+
+\subsubsection{How it was used}
+
+The master-mode function call three threads, which run parallel the device stays in the master mode. 
+Before these threads are stared the connection is set up and configured. Then the function itself only call the threads and waits for them to terminate. 
+The threads terminate if the stop signal as described in point xx is set. If all threads have terminated the function returns.
+Each thread has an infinite loop that does a certain task. The tasks from the master-mode has been split up in the following three threads: \\*
+
+\textbf{Broadcast Thread:} \\*
+This threads prepares the updates and broadcasts them over the network. 
+All information needed in the update (look up point xx master-update) has to be collected and copied in the message before the components get 
+converted form host byte order to network byte order using the function \lstinline{htonl()}. After the message is ready the whole struct is sent. \\
+
+\textbf{Receive Thread:} \\*
+This threads waits for answers from slave devices, if an answer was received a time stamp is saved. In the next step the group IDs are compared and it is
+checked if the message needs to be precessed any further. If the message is relevant to this master (matching group IDs), the transmission delay is calculated.
+For each slave their individual results must be stored separately. To maintain all the active slaves and their transmission delays and the current average delay,
+a double linked list is used. Each node of the list holds the IP of a slave and the last round trip delays and as well the current average roundtrip delay,
+ which is calculated with a moving average window. This list makes it possible to store information for every slave and easily add or remove slaves from the system.
+If a new value was calculated for a slave the value is stored in the correlating node and the average is built new, to also take the latest value into account. 
+Also the time when the save responded the last time is saved. This is used to be able to delete slaves, which were taken of the network and 
+didn't respond for a given time. \\
+ 
+\textbf{Check Thread:} \\*
+In this threads it is checked if all slaves which are currently observed by the master and kept in the list are still responding. If a slave is
+not responding any more this treads deletes the node from the list. \\*
+
+There is one more thread which is started in the main function and runs in the master and as well in the slave mode. This thread is 
+communicating with the player and is necessary for the integration of the synchronization application in the existing system. \\*
+
+If an event is requested and is ready to be initialized a thread which simply holds an countdown is stared. This is the same in the slave-mode.
+This thread terminates after the countdown is over and the event has been initialized.
+
+\subsection{Flow Chart}
+
+To implementation of the master-mode function can be seen in the graphic on the next page. There can be seen all three threads and the steps in each thread.
 
 
+\begin{landscape}
+\includegraphics[height=\textheight,keepaspectratio]{master-mode.jpg}
+\end{landscape}
 
-%broadcasting and calculating broadcast address
+\section{Slave-mode}
 
-%steps: create a udp socket, get/claculate the address, REUSEADDR, bind, setsocketopt, sendto, recvfrom
+If the device is currently in the slave state, the slave function has to perform the following tasks:
+\begin{itemize}
+    \item receive updates and response to them
+    \item communicate with the player
+    \item initialize a event if necessary
+\end{itemize}
 
-\section[Master-mode]{Master-mode}
+All these tasks a performed in the function itself. In the slave mode the function \lstinline{recvfrom()} waits for an update from a master. 
+If an update was received in the first step it is checked if the event ID has changed and if an event has to be initialized. If an event should be 
+stared like in the master mode a thread with a countdown is stared which terminates after the event again. Then all the informations are added to 
+the answer and the answer is sent to the master the update was received from. Also the communication with the controller is done directly in the 
+slave-mode function.
 
-\subsection[threads]{threads}
+\subsection{Flow Chart}
 
-\section[Slave-mode]{Slave-mode}
+In the following flow chart the steps which are performed in the slave-mode can be seen.
+\includegraphics[width=0.45\textwidth,keepaspectratio]{slave-mode.jpg}
 
-\chapter[Integration]{Integration}
+\chapter{Integration}
+
+The problem solution also contained the integration of the event synchronization in the existing player, therefor the application had to communicate with
+the player. The player communicates with other applications on the device over a pipe ...
 
 \section[Communication with pipe]{Communication with pipe}
 
