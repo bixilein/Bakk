@@ -545,7 +545,7 @@ It is also suitable for broadcasting information.
 For this project one of the main advantage was the lack of delivery control mechanism and the resulting speed of the Protocol.
 Therefore in the event synchronization application the communication between the devices is established with the User Datagram Protocol (UDP). 
 
-\subsection{Prepare connection}
+\subsection{Set up connection}
 
 In order for the application to be able to send and receive UTP packets an interface between the application and the network is necessary, this is 
 provided by so called sockets. The application creates the socket, where the socket type defines the communication typ. 
@@ -726,30 +726,80 @@ slave-mode function.
 In the following flow chart the steps which are performed in the slave-mode can be seen.
 \includegraphics[width=0.45\textwidth,keepaspectratio]{slave-mode.jpg}
 
-\chapter{Integration}
+\section{Integration}
 
 The problem solution also contained the integration of the event synchronization in the existing player, therefor the application had to communicate with
-the player. The player communicates with other applications on the device over a pipe ...
+the player, therefore a pipe has been used. 
 
-\section[Communication with pipe]{Communication with pipe}
+\subsection{Communication with pipe}
 
-\section[Options for user]{Options for user}
+%ok here what is a pipe and that the set of commands and what they do
+% quotes from http://www.gnu.org/software/libc/manual/html_node/Pipes-and-FIFOs.html
+A pipe is a mechanism for interprocess communication, data written to the pipe by one process can be read by another process. 
+The data in a pipe is handled in a first-in, first-out (FIFO) order, therefore pipes are referred as FIFO in the further descriptions.
+A FIFO has to be open at both ends, that means that it can only be written to a FIFO from which is read by a other precess, it also can be read
+from a FIFO a other process is writing to.
+% http://docs.oracle.com/cd/E19455-01/805-7478/6j71mbrdh/index.html
+FIFOs only allow one way communication, that means that one end of a FIFO is used for writing data and the other for reading.
+FIFOs are a tool that can be used for unidirectional communication between unrelated processes.
+To create a FIFO the following commands can be used \lstinline{mknod()} or \lstinline{mkfifo()}. After a FIFO was created it must be opened by
+the processes which should communicate.
+They are opened in the same manner as other file system nodes with \lstinline{open()}. After the pipe is opened a process can ether write
+\lstinline{write()} or read \lstinline{read()} from it.
 
-configuration
-The user has the possibiliy to set several configuration options for the time synchronisation.
-This options can be set in the configuration file. (here it would be nice how the user can set them, of the perspective of the usre)
+% more particular
+The player already communicates with other processes on the device over a FIFO. The pipe which is was used so far by other programs to 
+give commands to the player is called the \lstinline{controller.fifo}, also this application uses that pipe to start the event. 
+Because pipes only allow unidirectional communication, there was one pipe new created for the player to request events form the synchronization application. 
+This pipe is read by the synchronization application and the player writes to it. In the first steps of the main function before the master or slave
+function is called, it is check if the pipes need for the communication already exist and if not they are created.
 
-sync\_enabled: this optin secifys if the timesyncronisation is active on the device. A script is run in the background on the divice all the time wich checks for the configuration files and starts programs or stops them if the configuration is changed. After the divices is botted the script reads the confiugfiles once and starts all of the configurateable programs.
+% set of commands
 
-sync\_group\_id: the devices within the same network can be grouped, this option is imported because diffrent devices in the same network can also play dfferen contend wiht the groups zou can specify wicht devices in the nework should be synced togeteher if a syncronzed event is requested. If this configuration option is set to -1 which is also the default configuration the syncdaemon is not executed because the device would not sync to any other device. In the udp packages the the group id is trasmited as well and if the group id of the received masseg does not fit the group id of the divces the package is not process any furtehr.
+\lstinline{sync_req}
+\lstinline{sync_deny}
+\lstinline{sync_rdy}
+\lstinline{sync_EVENT}
+\lstinline{sync_cancel}
 
-sync\_group\_order: wiht the group order a order within the group can be deifend. This can be useful if the deivies should play differnet conted syncronized. For example different screeen wich are orderd next to each other and where each display shows only a part of the same picture (or for example two robots wich coloperate, each one does a different action but the event must be in perfect sync).
-
-sync\_forced\_master: (here it would be nice to know why the user needs this option) The syncdaemon is implemetnned in this way that one divice is collecting all the data and initalizes the event if requested form the controllerfifo. If this option is not set the master is selected dynamically. If this option is set this devices becomes the amster. If an dynamiacally selecteed master already exists the old master returns to slave mode. If to masters are specifed masters within the same group one of them returns an error and notificates the user that there is only one specified master alowed in one system.
-
-sync\_wait: due to the timedrift the played content gets out of sync, if contend should be played in sync and one device has not finished the other contend yet, there are two options. The default option is that the wait option is set. In this case the devieces wati for each other and then start the synced conted this can cause the screan to show no conted for a short period (usually not loger than 1 to 2 seconds) if this should be avoided the the option can be set to false, in this case the device is playing some ohter contetd wich must not be in sync but if all devices finished the old contend the new conted will be interuped. For this option also special conted can be specifed, for this purpuse pictures would be a good option.
+\includegraphics[width=\textwidth,keepaspectratio]{integration}
 
 
+\subsection{Options for user}
+
+The user has the possibility to set several configuration options for the time synchronization.
+This options can be set in a configuration file. All the options are described below:
+
+\textbf{sync\_enabled}: \\*
+This option specifies if the time synchronization is active on the device. A script is run in the background on the device which checks the configuration files 
+and starts programs or stops them if the configuration is changed. After the devices is booted the script reads the configuration files once and 
+starts the programs.
+
+\textbf{sync\_group\_id}: \\*
+The devices within the same network can be grouped, this option is imported because different devices in the same network can also play different contend 
+with the groups you can specify which devices in the network should be synced together if a synchronized event is requested. 
+If this configuration option is set to -1 which is also the default configuration the synchronization application is not executed because the device would not sync to any other device.
+
+\textbf{sync\_group\_order}: \\*
+With the group order a order within the group can be defined. This can be useful if the devices should play different content synchronized. 
+For example different screens which are ordered next to each other and where each display shows only a part of the same picture 
+(or for example two robots which cooperate, each one does a different action but the event must be in perfect sync).
+
+\textbf{sync\_forced\_master}: \\*
+%here it would be nice to know why the user needs this option 
+The synchronization application is implemented in as a master slave system. If this option is not set the master is selected dynamically, 
+this devices becomes the master. If an dynamically selected master already exists the old master returns to slave mode. 
+
+\textbf{sync\_wait}: \\*
+Due to the time drift the played content gets out of sync, if contend should be played in sync and one device has not finished the other contend yet, 
+there are two options. The default option is that the wait option is set. In this case the devices wait for each other and then start the synced content. 
+This can cause the screen to show no content for a short period (usually not longer than 1 to 2 seconds) if this should be avoided the option can be set to false. 
+In this case the device is playing some other content which must not be in sync, if all devices finished the old contend the new content will be interrupted. 
+For this option also special content can be specified, for example pictures are a good option for this purpose.
+
+\chapter{Conclusion and Prospect}
+
+% yehhh an other thing were I have no idea what I should write 
 
 % Literaturverzeichnis
 \bibliography{Vorlage_BT_BMR_WS2013_Literatur}
@@ -762,9 +812,9 @@ sync\_wait: due to the timedrift the played content gets out of sync, if contend
     \addcontentsline{toc}{chapter}{\listfigurename}
     \listoffigures
     \newpage
-    \phantomsection
-    \addcontentsline{toc}{chapter}{\listtablename}
-    \listoftables
+    %\phantomsection
+    %\addcontentsline{toc}{chapter}{\listtablename}
+    %\listoftables
 \endgroup
 
 
@@ -772,7 +822,8 @@ sync\_wait: due to the timedrift the played content gets out of sync, if contend
 \addchap{List of Abbreviations}
 \hspace{-17mm}\begin{tabular}{>{\raggedleft}p{0.2\linewidth} p{0.75\linewidth} p{0.1\linewidth}}
 www & World Wide Web \\
-URL & Uniform Resource Locator
+URL & Uniform Resource Locator \\
+UDP & User Datagram Protocol
 \end{tabular}
 
 \begin{appendix}
