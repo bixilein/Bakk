@@ -630,21 +630,21 @@ If a program is implemented as a  multi thread program, it can be described as a
 Each thread acts like its an individual program, with the expiation that all the threads work in the same memory space. 
 
 %http://www.cs.cf.ac.uk/Dave/C/node29.html#SECTION002910000000000000000
-Multithreading can have many benifits for a apllication, some of that are pointed out at "Quelle":
+Multi threading can have many benefits for a application, some of that are pointed out at "Quelle":
 \begin{itemize}
     \item Improve the responsiveness, in a program in which activities not dependent on each other can be redesigned so that each activity is defined as a thread. 
-    For example, the user of a multithreaded GUI does not have to wait for one activity to complete before starting another.
+    For example, the user of a multi threaded GUI does not have to wait for one activity to complete before starting another.
     \item Improve program structure, many programs are more efficiently structured as multiple independent units of execution instead of as a single thread. 
-    Multithreaded programs can be more adaptive to variations in user demands than single threaded programs.
+    Multi threaded programs can be more adaptive to variations in user demands than single threaded programs.
     \item Use fewer system resources, programs that use multiple processes need more resources, 
     because each process has a full address space and operating systems state. Creating a thread instead of a process saves time and space.
 % form http://www.cs.iit.edu/~cs561/cs450/ChilkuriDineshThreads/dinesh's%20files/Advantages%20and%20disadvantages.html 
     \item Threads can share data and therefor they do not need interprocess communication, like it would be necessary if multiple process are used for the same task.
 % from http://www.zdv.uni-mainz.de/cms-extern/DUS/progtool/dce31unx/develop/appdev/Appde153.htm
-    \item Using threads improves the performance of a programm, it raises the computiation speed of the application.
-    \item Multiple threads are most used in mulitprocessor system but using threads can also improve application on single processor devices 
+    \item Using threads improves the performance of a program, it raises the computation speed of the application.
+    \item Multiple threads are most used in multiprocessor system but using threads can also improve application on single processor devices 
     by permitting the overlap of input and output or other slow operations.
-\end{itemize}
+\end{itemize} 
 
 % http://www.albahari.info/threading/threading.pdf = nice source, but I haven't used it so far
 To create a new thread the function % quotes from the main page !!!
@@ -662,6 +662,35 @@ int pthread_join(pthread_t thread, void **retval);
 waits for the thread specified by \lstinline{thread} to terminate.
 
 \subsubsection{Mutual exclusion}
+
+When using multiple threads and shared data it is necessary to ensure that at no time two processes access the data at the same time.
+The section in the code in which the shared data is accessed in a thread is called critical section, this section must not be accessed by
+% publib.boulder.ibm.com/infocenter/aix/v7r1/index.jsp?topic=%Fcom.ibm.aix.genprogc%2Fdoc%2Fgenproc%2Fmutexes.html
+two or more threads at the same time. This is a basic problem in concurrent computing, to protect resources from parallel access, mutexes are used.
+A mutex is a mutual exclusion lock which can only be hold by one thread at a time.
+%www.thinkingparallel.com/2006/09/09/mutual-exclusion-with-locks-an-introduction
+One of the challenges in programming is to find all section in a code where shared data is accessed. It is really hard to debug a missing mutex, 
+because the error can not be reproduced that easily and the error may not occur for many runs. Therefore it is very important to comprehensively test programs where multiple threads access shared memory.
+A mutex variable can have to sates: locked/set and unlocked/reset. 
+If a thread wants to access a shared memory the \lstinline{pthread_mutex_lock()} function
+\begin{itemize}
+    \item locks the mutex, if it is currently unlocked
+    \item blocks the calling thread, if the mutex is already locked by an ohter tread, untill it is unlocked again
+    \item might block forever, if the mutex which was tired to be locked is already held by the current thread
+\end{itemize}
+
+If the tread finished the critical section the \lstinline{pthread_mutex_unlock()} function
+\begin{itemize}
+    \item unlocks the mutex, if the mutex was owned by the calling thread
+    \item returns an error, if the mutex is already unlocked
+    \item unlocks the mutex or returns an error, if the mutex was locked by an other tread, the behavior in this case depends on the type of the mutex.
+\end{itemize} 
+This functionality ensures that no thread can access a critical section in which shared memory is accessed which is currently processed by an other tread.
+
+A mutex is created by calling \lstinline{pthread mutex init()} if \lstinline{NULL} is passed as argument to the function, the mutex will have the default 
+attributes. The ID of the created mutex is returend to the calling thread through the mutex parameter. When a mutex is not needed anymore it should be
+destroyed with \lstinline{pthread_mutex_destroy()}.
+
 
 % something about muetx, why it is needed and how it works, just in general, but I really don't feel like doing that now
 
@@ -692,7 +721,7 @@ In this threads it is checked if all slaves which are currently observed by the 
 not responding any more this treads deletes the node from the list. \\*
 
 There is one more thread which is started in the main function and runs in the master and as well in the slave mode. This thread is 
-communicating with the player and is necessary for the integration of the synchronization application in the existing system. \\*
+communicating with the player and is necessary for the integration of the synchronization application in the existing system. 
 
 If an event is requested and is ready to be initialized a thread which simply holds an countdown is stared. This is the same in the slave-mode.
 This thread terminates after the countdown is over and the event has been initialized.
@@ -723,8 +752,10 @@ slave-mode function.
 
 \subsection{Flow Chart}
 
-In the following flow chart the steps which are performed in the slave-mode can be seen.
+In the following flow chart the steps which are performed in the slave-mode can be seen. \\
+\begin{addmargin}{2cm}
 \includegraphics[width=0.45\textwidth,keepaspectratio]{slave-mode.jpg}
+\end{addmargin}
 
 \section{Integration}
 
@@ -755,15 +786,20 @@ This pipe is read by the synchronization application and the player writes to it
 function is called, it is check if the pipes need for the communication already exist and if not they are created.
 
 % set of commands
+If a content should be played in sync, the file has a flag set, which indicates this. When the player is playing content it always loads the next content 
+while playing the current content. When the player loads a file and the file has the flag set, it writes a message in the pipe for the synchronization application, 
+requesting an event (\lstinline{sync_req}. The synchronization program can deny the request, in this case a deny message is written in the controller pipe for 
+the player (\lstinline{sync_deny}). The request is denied if the device is currently in the slave mode, if the request was denied the device continues playing
+the next content which should not be played in sync. If the device is in the master mode, each device is notified that the form the master device requested 
+sync content should be loaded. The request for loading the content is transmitted over the network with the update and on each device the request is written to
+the pipe for the player (\lstinline{sync_req}). If a device has finished loading the content, the player notifies the synchronization application 
+(\lstinline{sync_rdy}) which adds the information to the answer for the master. If all devices have successfully loaded the next content, the event is 
+initialized by the master. Each device gives the signal to the player to start the content (\lstinline{sync_EVENT}).
+Each slave has an internal countdown which cancels the event (\lstinline{sync_cancel}) if the event is not initialized after a request for loading a content, this is to prevent
+errors if the master device is taken of the network after a request for loading was sent. \\*
 
-\lstinline{sync_req}
-\lstinline{sync_deny}
-\lstinline{sync_rdy}
-\lstinline{sync_EVENT}
-\lstinline{sync_cancel}
-
+The whole communication over the pipes is shown in the graphic below. \\
 \includegraphics[width=\textwidth,keepaspectratio]{integration}
-
 
 \subsection{Options for user}
 
