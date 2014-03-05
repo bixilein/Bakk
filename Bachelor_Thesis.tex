@@ -542,18 +542,16 @@ the regular working mode.
 
 \chapter{Implementation}
 
-% quotes from adventagesC 
-The application was implemented in the programing language C. C is especially good for programming with limited resources, the language is very close
-to the machine and therefor specially suited for microcontrollers. With C every resource a computer offers can be used. C is also the language which is currently most used to program UNIX systems, for example most of the GNU project is written in C. Also an other main advantage of C is the speed of the resulting application, C
-code can be optimized much more than higher-level languages and the language set is very efficient. % !!!direct quote wiki.answers.com/Q/What_is_the_advantage_of
-%_c_language. 
-C is a very powerful programming language, it is best used for data structures and designing system software. % !!!direct quote iimchyderabad.com/Material/cnotes.pdf
+The application was implemented in the programing language C. 
+This programming language has many advantages which are analyzed in \citep{adventagesC}. C is especially good for programming with limited resources, the language is very close to the machine and therefor specially suited for microcontrollers. 
+With C the resource a device has can be used more efficiently. C is also the language which is currently most used to program UNIX systems, for example most of the GNU project is written in C. An main advantage of C is the speed of the resulting application. Code written in C can be optimized more than application which are written in other high level languages. 
 
+%hallo down
 \section{Communication - UTP}
 
-% all qutes from the Illustrated network 
 For transmitting the so far described package the User Datagram Protocol was used.
-The User Datagram Protocol (UTP) is a transport layer  protocol that rides on top of IPv4 or IPv6, that enables sending messages between devices over a network.
+The User Datagram Protocol (UTP) is a transport layer  protocol that rides on top of IPv4 or IPv6, that enables sending messages between devices over a network. 
+The mechanism of UTP is described and showed by \citep[User Datagram Protocol]{UDP}.
 UDP uses a very simple transmission model and provides only a minimal protocol mechanism. It does not provide any control mechanisms, therefore there is no guarantee 
 of the delivery of the packages. There is also no guarantee for the order in which the messages arrive and also no duplicate protection.
 UTP is used for application where error checking and correction is not necessary or done by the application, which uses it, itself.
@@ -561,20 +559,22 @@ If error checking is needed at the network interface level other protocols like 
 Protocol (SCTP) must be used. Tu sum it up, UDP is a low-overhead transport for applications that do not need guaranteed delivery like provided by TCP.
 The advantages of UDP lies in it's simplicity, the simple operations of UTP make it fast and therefor ideal for delay-sensitive traffic.
 Time-sensitive application could suffer from waiting for all the overhead that TCP requires to set up a connection between hosts before sending a message.
-Also for time-sensitive application dropping packages is preferable to waiting for delayed messages.
-UTP is transaction-oriented which makes it most suitable for simple protocols. UTP is also stateless what allows a very large number of clients.
-It is also suitable for broadcasting information.
+Also for time-sensitive application dropping packages is preferable to waiting for delayed messages. UTP is transaction-oriented which makes it most suitable for simple protocols. UTP is also stateless what allows a very large number of clients.
+It is also suitable for broadcasting information. \\*
 
 For this project one of the main advantage was the lack of delivery control mechanism and the resulting speed of the Protocol.
 Therefore in the event synchronization application the communication between the devices is established with the User Datagram Protocol (UDP). 
 
+\newpage
+
 \subsection{Set up Connection}
 
 In order for the application to be able to send and receive UTP packets an interface between the application and the network is necessary, this is 
-provided by so called sockets. The application creates the socket, where the socket type defines the communication typ. 
+provided by so called sockets. The principle and the use of sockets was described in \citep{socket1}.
+The application creates the socket, where the socket type defines the communication typ. 
 UTP for example uses \lstinline{SOCK_DGRAM} sockets. A socket is a bidirectional communication endpoint which can transmit or receive data from an other socket. \\
 
-To set up a sockets for communication the following steps must be performed in the code:
+The necessary steps to set up a sockets for an UDP communication are shown in the \citep{socket}. The program code must contain the following steps:
 \begin{itemize}
     \item Creating a socket/an endpoint for communication by calling \lstinline{socket()}
     \item Assining a address to the created socket by binding the socket with calling \lstinline{bind()} 
@@ -597,6 +597,8 @@ When transmitting packets with UTP the connection is not established before send
         \caption{UTP concept}
 \end{figure}
 
+\newpage
+
 When the socket should not be assigned to one particular address and instead watch out for all messages which are transmitted to this node over the network,
 the member \lstinline{s_svadr.sin_addr.s_addr} must be set to \lstinline{INADDR_ANY}. A socket also can be bound to the broadcast address and that receives
 all messages which are broadcasted over the network.
@@ -610,12 +612,11 @@ Each device which uses the IP Protocol for communication needs a unique identifi
 be address individually. An IPv4 address is a 32-Bit value which contains to components the network ID and the host ID.
 
 %here are quotes for the broadcast things ... look it up in the *.bbl !!!
-%if I really need something to fill the pages I can explain the concept in detail with all the human readable aspects and blahhhhhhh
 The IPv4 Protocol which is used in this application uses a set of broadcast addresses to provide the above described one to 
-everyone transmission. The network broadcast address can be calculated by setting all the bits of the Host ID part to one.
+everyone transmission. The network broadcast address can be calculated by setting all the bits of the Host ID part to "1", as outlined in \citep{broadcast}.
 For getting the broadcast address of a network in a application the device performs a bitwise "and" operation over it's own IP address and 
 mask where all the host-bits are set to 1. The graphic shows the operation how a broadcast address is formed.
-% graphic form http://www.ehow.com/how_5175490_calculate-broadcast-address.html %it is a complete useless graphic but I need something to fill pages !!!
+% graphic form http://www.ehow.com/how_5175490_calculate-broadcast-address.html 
 
 \begin{figure}[h!]
     \centering
@@ -626,7 +627,8 @@ mask where all the host-bits are set to 1. The graphic shows the operation how a
 % one more quote from the main page !!!
 When messages are broadcasted, the socket has to be configured, after it was created and bound to the interface, to enable broadcasting. 
 This can be done in the code with \lstinline{setsockopt(int sockfd, int level, int optname, const void * optval, socklen_t optlen);} what manipulate options for 
-the socket referred to by the file descripter \lstinline{sockfd}. When manipulating the socket options, the level at which the option resides and the name of
+the socket referred to by the file descripter \lstinline{sockfd}, as described in
+\citep{LINUX}. When manipulating the socket options, the level at which the option resides and the name of
 the option must be specified, for this application the level had to be specified as \lstinline{SOL_SOCKET} and the name of the option which had to be set to one is 
 \lstinline{SO_BROADCAST}.
 
@@ -657,7 +659,7 @@ If a program is implemented as a  multi thread program, it can be described as a
 Each thread acts like its an individual program, with the expiation that all the threads work in the same memory space. 
 
 %http://www.cs.cf.ac.uk/Dave/C/node29.html#SECTION002910000000000000000
-Multi threading can have many benefits for a application, some of that are pointed out at "Quelle":
+Multi threading can have many benefits for a application, some of that are pointed out in \citep{threads}:
 \begin{itemize}
     \item Improve the responsiveness, in a program in which activities not dependent on each other can be redesigned so that each activity is defined as a thread. 
     For example, the user of a multi threaded GUI does not have to wait for one activity to complete before starting another.
@@ -665,16 +667,21 @@ Multi threading can have many benefits for a application, some of that are point
     Multi threaded programs can be more adaptive to variations in user demands than single threaded programs.
     \item Use fewer system resources, programs that use multiple processes need more resources, 
     because each process has a full address space and operating systems state. Creating a thread instead of a process saves time and space.
+
 % form http://www.cs.iit.edu/~cs561/cs450/ChilkuriDineshThreads/dinesh's%20files/Advantages%20and%20disadvantages.html 
+
     \item Threads can share data and therefor they do not need interprocess communication, like it would be necessary if multiple process are used for the same task.
+
 % from http://www.zdv.uni-mainz.de/cms-extern/DUS/progtool/dce31unx/develop/appdev/Appde153.htm
+
     \item Using threads improves the performance of a program, it raises the computation speed of the application.
     \item Multiple threads are most used in multiprocessor system but using threads can also improve application on single processor devices 
     by permitting the overlap of input and output or other slow operations.
 \end{itemize} 
 
 % http://www.albahari.info/threading/threading.pdf = nice source, but I haven't used it so far
-To create a new thread the function % quotes from the main page !!!
+
+To create a new thread the function (like described in \citep{LINUX})
 \begin{lstlisting}
 int pthread_create(pthread_t *thread, const pthread_attr_t *attr, 
                    void *(*start_routine) (void *), void *arg);

@@ -26,35 +26,15 @@ Reniers, M.A., 1999.
 {\lbrack}Thesis
 {\rbrack \ } The Netherlands: UniversiteitsDrukkerij, Eindhoven. 
 
-
-
-
-
-
-% sync general with nice ofset graphic and nice formular
-\harvarditem{Mills}{1991}{sync}
-Mills, D.L., 1991.
-{\em Internet Time Synchronizaton}. 
-{\lbrack}Paper{\rbrack \ }xxxx: IEEE.
-
-% The Illustrated Network Book 
-\harvarditem{Goralski}{2009}{UTP-book}
-Goralski, W., 2009. {\em The Illustrated Network}.
-  3{\edition}. Burlington: Morgan Kaufmann Publishers.
-
 % Advantages of C 
 \harvarditem{Burgess}{2002}{adventagesC}
 Burgess, M., 2002. {\em The GNU C Programming Tutorial}.
   4.1{\edition}. Oslo: Free Software Foundation, Inc.
 
-
-
-
-% sync general paper
-\harvarditem{Lenzen, Thomas, Locher, Sommer {\harvardand} Wattenhofer}{20xx}{sync1}
-Lenzen, C., Locher, T., Sommer, P., {\harvardand} Roger Wattenhofer, R.,
-20xx. {\em Clock Synchronization: Open Problems in Theory and Practice}. 
-{\lbrack}Thesis{\rbrack \ }Swizerland: ETH Zurich.
+% The Illustrated Network Book 
+\harvarditem{Goralski}{2009}{UDP}
+Goralski, W., 2009. {\em The Illustrated Network}.
+  3{\edition}. Burlington: Morgan Kaufmann Publishers.
 
 %socket main info
 \harvarditem{iOS Developer Library}{2013}{socket}
@@ -72,11 +52,27 @@ iOS Developer Library, 2013.
   [{\acessedat} 20.2.2014].
 
 %broadcast address
-\harvarditem{{Anglia Ruskin University Library}}{2010}{Anglia10}
-{Anglia Ruskin University Library}, 2010. {\em {Guide to the Harvard Style of
-  Referencing}}. 2{\edition}. {\lbrack}{online}{\rbrack \ }Cambridge, UK:
-  Anglia Ruskin University.
+\harvarditem{{Microsoft TechNet}}{2014}{broadcast}
+{Microsoft TechNet}, 2014. {\em {Broadcast Address}}. 
+{\lbrack}{online}
 {\acessedthrough} <\url{http://technet.microsoft.com/en-us/library/dd469716(v=ws.10).aspx}> [{\acessedat} 6.7.2011].
+
+% LINUX man page
+\harvarditem{{Linux man page}}{2014}{LINUX}
+{LINUX man page}, 2014. {\em {linuxmanpages}}. 
+{\lbrack}{online}
+{\acessedthrough} <\url{http://www.linuxmanpages.com/}> [{\acessedat} 6.7.2011].
+
+% Threads 
+\harvarditem{{Computing Tutorials}}{2012}{threads}
+{Computing Tutorials}, 2012. {\em {computing.llnl.gov}}. 
+{\lbrack}{online}
+{\acessedthrough} <\url{https://computing.llnl.gov/tutorials/pthreads/#Thread> 
+[{\acessedat} 6.7.2011].
+
+
+
+
 
 
 \end{thebibliography}
