@@ -45,7 +45,7 @@
 \usepackage{lscape} %make a page landscape
 
 \usepackage{helvet}
-\renewcommand{\familydefault}{cmss}
+\renewcommand{\familydefault}{cmsy}
 
 \usepackage[pdftex]{graphicx}
 
@@ -168,15 +168,14 @@ Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text 
  
 \newpage
 
-% Acknowledgments = complete
+% Acknowledgments
 \section*{Acknowledgments}
 \thispagestyle{empty}
 First I would like to thank the company "Dension" for giving me the opportunity to do an internship. The internship woke my interest for software development
 and digital science. 
 I also want to thank IAEST-Budapest for organizing my accommodation and all the great spare time activities. It was a great experience, to do an internship
-in a foreign country and experience a other culture.
+in a foreign country and experience a different culture.
 Especially I want to thank my mentor and supervisor Zoltan Puskas, who took a lot of time and effort to supervise me during my internship. 
-He thought me a lot and inspired me in many ways.
 
 \newpage
 \tableofcontents\thispagestyle{empty}
@@ -184,41 +183,40 @@ He thought me a lot and inspired me in many ways.
 \newpage
 \setcounter{page}{1}
 
-% Introduction = complete
+% Introduction
 \chapter{Introduction}
 
-This thesis is a report about a projects which was carried out during a internship at the company "Dension" in Budapest. 
-This internship was part of the B.Sc. program Mechanics/Robotics at the university of applied science Technikum-Wien. 
-The company "Dension" is an automotive electronic company which sells micro controllers which are used for different purposes, for example 
-as multimedia gateways for cars or other multimedia purposes.
-These micro controllers are also used for playing video and audio content on screens which are located in shopping centers for example.
-During my internship I worked in the development department of the company, I got an good insight into software development for micro controllers with 
-limited resources and in UNIX based operation systems.
+This thesis is a report about a project which was carried out during an internship at the company \textit{"Dension"} in Budapest. 
+This internship was part of the B.Sc. program Mechatronics/Robotics at the university of applied science \textit{Technikum Wien}. 
+The company \textit{"Dension"} is an automotive electronic company which sells microcontrollers which are used for different purposes, for example 
+as multimedia gateways in cars. 
+These microcontrollers are also used for other multimedia purposes, as playing video and audio advertisement in shopping centers.
+During my internship I worked in the development department of the company, I got an good insight into software development for microcontrollers with 
+limited resources and in UNIX based operating systems.
 
-The topic of the thesis "event synchronization for micro controller" was a feature which was requested from costumers for the products the 
-company produces. This topic was given to me because synchronization of digital devices is a common problem in computer science and as well in robotic, so I could
+The topic of the thesis \textit{"Event Synchronization for Microcontroller"} was a feature which was requested from several costumers. 
+This topic was given to me because synchronization of digital devices is a common problem in computer science and as well in robotic, so I could
 profit a lot form it.
 
-% Subject area = complete
-\section{Subject area - Synchronization in digital science}
+% Subject area
+\section{Subject Area - Synchronization in Digital Science}
 
-Synchronization is a common problem in computer science and engineering. The internal clocks of computers and micro controllers are not very accurate,
- the problem is that that after some time all clocks differ due to cock drift. This is caused by different rates of the clocks with which time is counted. 
-The synchronization problem is a problem which occurs in many technical applications. There are several problems which are caused by the fact that clocks on different devices are not in sync, specially in distributed systems which should fulfill a shared task. 
+Synchronization is a common problem in computer science and engineering. 
+The internal clocks of computers and microcontrollers are not very accurate, 
+ because even if the clocks are synchronized when they start after some time all clocks differ due to cock drift. This drift is caused by different rates with which the internal time is counted, see also \citep{problem}.
+The synchronization of digital devices is a problem which occurs in many technical applications. 
+There are several problems which are caused by the fact that clocks on different devices are not in sync, specially in distributed systems 
+which should fulfill a shared task. 
+One example for the synchronization problem in robotic is, when it is needed to identify causal relationships
+between events in the physical world, from sensors in different locations.
 
-% Motivation !!!not complete !!!
-\section{Personal motivation}
+% Problem description
+\section{Problem Description}
 
-Time synchronization is a common problem in the field of digital science, % some applications 
-To work out an individual solution for this problem was not only a requested feature form the company, it was also profitable for me because I could learn
-a lot while working on the project.
-
-% Problem description = !!nearly complete  !!
-\section{Problem description}
-
-The microcontrollers which are produced and distributed by the company work on a UNIX based operating system which is specially designed 
+The microcontrollers which are produced and distributed by \textit{"Dension"} work on a UNIX based operating system which is specially designed 
 for their purpose and applications. These microcontrollers have very limited resources, like processing power and RAM. 
-The company offers different models, the most sold model is the MPX.\\*
+The company offers different models, the most sold model is the MPX.
+\newpage
 The MPX has the following specifications:
 \begin{itemize}
     \item Kernl: Linux (32 Bit)
@@ -227,116 +225,118 @@ The MPX has the following specifications:
     \item Flash 1MB to 8MB
     \item 32MB @ SD-Card 
 \end{itemize}
-The company got the request form several of their customers that they would like to synchronize events on devices which are connected in a local network. 
+The company got the request form their customers that they would like to synchronize events on devices which are connected in a local network. 
 This feature was requested for example to start videos in sync on monitors which are accessed by different microcontrollers. 
-So the company searched for a possibility to meet the needs of the costumer and synchronize different devices. It also had to be consider the resources available 
-on the devises are limited and that the other functionalities of the are not constrained. Playing video and audio can take a lot of processing power, 
-tests showed that playing a video and an audio content at the same time could take to 90 - 95\% of the CPU power. 
-This fact has to be taken in account, because the synchronization should not lower the quality of the video and audio.
-It was also an important point that that the synchronization get integrated in the existing player.
+When searching a solution it had to be consider the resources available 
+on the devises are limited and that the other functionalities must not be constrained. Playing video and audio can take a lot of processing power. 
+Tests showed that playing a video and an audio content at the same time could take up to 90\% of the CPU power on the MPX. This had to be taken in account, because running the synchronization application should not lower the quality of the video and audio content.
+It was also an important point that that the synchronization could be integrated in the existing player.
+An other specification which arose through the request
+from the customers was that there will be no connection to the internet in most situations.
 
-The task was to design, implement and test an application, which should enable to synchronize an event on microcntollers which are connected in a local network. 
+In conclusion the task was to design, implement and test an application, which should give the possibility to synchronize an event on different devices.
 
-% state of the art = complete
-\section{State of the art}
+% 
+\section{State of the Art and Concept for a Solution}
 
-There are already several solution for the synchronization problem. The first step to do, was to do an research on existing solution 
-and to understand the implementation and algorithm of these solution. On basis of this knowledge it was consider which parts of existing solution 
-could be used and what has to be implemented to find a optimal solution for the given problem. An other specification which arose through the request
-from the customers was that there will be no internet connection in most situations.
+There are already several solution for the synchronization problem. In the first step a research on existing solution was done.
+The implementation and algorithm of these solutions were analyzed. On basis of this knowledge it was considered which parts of existing solution 
+could be used and what had to be implemented to find a optimal solution for the given problem. \\* 
 
-\subsection{Existing synchronization solutions}
+A common solution for the synchronization problem is the Network Time Protocol (NTP), it's concept is described in \citep[5.1. Basic Concepts]{NTP}. It is a networking protocol to synchronize clocks on 
+devices which are connected over a network. 
+NTP is mainly used to synchronize computers over the Internet to high-precision timekeeping devices like atomic clocks.
+These clocks are capable of measuring the time very accurate and are used as reference. 
+Implementations of NTP transmit timestamps via the User Datagram Protocol (UDP) to the devices which should be adjusted. 
+Than the internal clock on the device is set to the correct value or the clock rate is fastened or slowed down, 
+till an accurate time is reached. If the clock is adjusted by fastening or slowing the clock rate, it takes some time till an accurate time is reached on
+the device.
 
-One solution for the synchronization problem is the Network Time Protocol (NTP) which is a networking protocol for clock synchronization for 
-devices which are connected over a network. NTP is mainly used to synchronize computers over the Internet to high-precision timekeeping devices like atomic clocks.
-These clocks can measure time very accurate and are used as reference. Implementations of NTP transmit 64-bit timestamps via User Datagram Protocol to 
-the devices which should be adjusted. Than the clock on the device is set to the correct value or the clock rate is fastened or slowed down. 
-If the clock rate is fastened or slowed it takes some time till the clock has the correct time.
-
-For the given task simply setting up an implementation of NTP was not an option. This was due to several reasons. 
+For the given task simply setting up an implementation of NTP was not an satisfying option for several reasons.
 From the task description it was clear that a connection to the Internet will not be provided in most of the application cases. Also the fact that
-NTP adjusts the clock on the device was a reason why it was not considered as solution for the given task, because the clocks have very in some 
-cases very different rates and the clocks would be out of sync within a short period and a continuous synchronization was for the task, 
-which is described in detail in the next point, not necessary. 
-
+NTP adjusts the internal clock on the device was a reason why it was not considered as a optimal solution for the given task. Science the clock
+ drift on these devices tends to be very significant, a synchronization would have been lost in a very short period of time.
+Also a continuous synchronization was not necessary for the given task. 
 A further point which had to be taken into account when considering different solutions was that it was very important for the company, 
 that the synchronization could be fully integrated in the already existing system with as less alterations of the existing structures as possible.
+Also other established time sync solutions like SNTP and PTP where considered but in conclusion for the given task they had the same weaknesses as NTP. \\*
 
-All considerations of the above described facts and problems led to the decision to design and implement a new simple protocol based on a similar algorithm as NTP
-which is suitable for the task and also takes the integration of the implementation in the already existing programs and structures in account. 
+All considerations of the above described facts led to the decision to design and implement a new simple protocol.
+The new algorithm had to have the benefits of NTP and had to be suitable for the task and take the integration in the already existing programs and structures 
+in account. In summery the resulting task was to designed a protocol which had the for the task relevant benefits of the algorithm used in NTP and which
+enabled a integration in the existing programs. For that reason the way NTP works and how it is implemented had to be analyzed in detail.
 
-Also other established time sync solutions like SNTP and PTP where considered but in conclusion for the given task they had the same weaknesses as described above. 
+\subsection{NTP - Network Time Protocol}
 
-As described above a protocol should be designed which has for the task relevant benefits of the algorithm which is used in NTP. For that reason the way how NTP
-works and how it is implemented was analyzed.
-
-\subsubsection{NTP - Network Time Protocol}
-
-In NTP packets for Satrum 0 clocks are transmitted via internet with UDP packages. To take the transmission delay and the variance
-in transmission delays in account the delay form several runs is calculated and averaged with a modified version of Marzullo's algorithm". The time which is needed
-till the message from the instance with the accurate clock is deliver to the device which should be adjusted is called transmission delay. The transmission
-delay can not be measured directly because the internal clocks of the two instances have different times and there is always an offset. To be able to determine 
-the transmission delay the round trip delay is measured. To measure the round trip delay a package is delivered from the first instance to the target device
-and than the target device answerers to the first instance, the time from sending the first message till receiving the answer is called the round trip delay.
-Every time when a packet was sent or received a timestamp is saved, from these timestamps the round trip delay and the offset can be calculated. \\* \\*
+In NTP implementations packets for high precision clocks are transmitted via the internet to the nodes in a network. 
+To take the transmission delay of the network and the variance in transmission delays in account, 
+the delay form several runs is calculated and averaged.
+The transmission delay is the time which is needed till the message from the instance with the accurate clock is deliver to the device which should be adjusted.
+The transmission delay can not be measured directly because the internal clocks of  two instances always have different times with an offset to each other. 
+To be able to determine the transmission delay the round trip delay is measured. 
+To measure the round trip delay a package is delivered from the first instance to the target device
+and than the target device answerers to the first instance. The time from sending the first message till receiving the answer is called the round trip delay.
+Every time when a packet is sent or received timestamps are saved. From these time values the round trip delay and the offset can be calculated, as 
+described in the documentation of an implementation of NTP(\citep[How NTP Works]{NTPdistro}). \\* \\*
 The round trip delay $\delta$ is calculated: 
 $$\delta=(t_3-t_0)-(t_2-t_1)$$ \\*
 The offset $\Theta$ is calculated:
 $$\Theta=\frac{(t_1-t_0)+(t_2-t_3)}{2}$$ \\*
 where\\*
-$t_0$ is the timestamp when the packet was sent\\*
-$t_1$ is the timestamp when the packet was received from the device\\*
-$t_2$ is the timestamp when the response packet was sent from the device\\*
+$t_0$ is the timestamp when the packet is sent\\*
+$t_1$ is the timestamp when the packet is received from the device\\*
+$t_2$ is the timestamp when the response packet is sent from the device\\*
 $t_3$ is the timestamp of the response packet reception.\\*
-With the knowledge of this tow variables the clock frequency is adjusted to reduce the offset.
+With the knowledge of this two values the clock frequency is adjusted to reduce the offset.
 
-\chapter{General Design of the Solution}
+%hallo
+\chapter{Design of the Solution}
  
 For the solution of the given problem a simple protocol was designed with a master/slave configuration where packages are transmitted
 over a local network. In the master/slave principle the master has unidirectional control over the other devices.
-The master saves timestamps when sending and receiving a package from which the roundtrip delay is calculated for every device in the system. 
+The master saves timestamps when sending and receiving a package from which the round trip delay is calculated for every device in the system. 
 
 \section{Protocol}
 
-In the regular working mode the master device broadcasts frequently packages to all devices in the network. These packages will be referred as "updates" 
-in the further description, because the master always updates the current roundtrip delay with each sent package. 
-All devices in the slave mode are listening for updates from a master. If a update is received from a slave the slave answers to the master immediately with a 
-package which will be referred as "answer" from now on. The master device saves a timestamp every time it broadcast or receives a package. If the master receives
-an answer package form a slave it calculates the roundtrip  delay $\delta$ and the transmission delay with the formulas:
+In the regular working mode the master device broadcasts frequently packages to all devices in the network. These packages will be referred as "\textit{updates}" 
+in the further description, because the master always \textit{updates} the current roundtrip delay with each sent package. 
+All devices in the slave mode are listening for \textit{updates} from a master. If a \textit{update} is received from a slave the slave answers to the master immediately with a 
+package which will be referred as "\textit{answer}" from now on. The master device saves a timestamp every time it broadcast or receives a package. If the master receives
+an \textit{answer} package form a slave it calculates the roundtrip  delay $\delta$ and the transmission delay with the formulas:
 $$\delta=(t_4-t_1)$$
 $$\delta/2=(t_4-t_1)/2$$
 This is a simplified formula of the one which is used in most NTP implementations. The formula could be simplified because tests showed that on these 
 devices in a representative network the time span $(t_2-t_3)$ was up to 10 times smaller than the average variation in the transmission delay. 
 This time span gets even smaller if no timestamps needs to be taken on the slave device and the slave device simply pings back to the master device.
-If a synchronized event is requested the master devices broadcasts this information with the update and each slave can according to it's individual
+If a synchronized event is requested the master devices broadcasts this information with the \textit{update} and each slave can according to it's individual
 transmission delay initialize the event.
 
 \subsection{Packages}
 
-There are two different types of packages which are transmitted over the network. The package which is broadcasted by the master, the update, and the answer which
-is sent back to the master from the slave, the answer. Each package contains different information and based on this the message type can be identified from the 
+There are two different types of packages which are transmitted over the network. The package which is broadcasted by the master, the \textit{update}, and the \textit{answer} which
+is sent back to the master from the slave, the \textit{answer}. Each package contains different information and based on this the message type can be identified from the 
 receiving device.
 
-\subsubsection{Update package}
+\subsubsection{Update Package}
 
-The update packages contains different information which are described in detail below. These informations are brodcasted over the network periodically. \\
+The \textit{update} packages contains different information which are described in detail below. These informations are brodcasted over the network periodically. \\
 
 \textbf{Group ID:} \\
 Within a network the devices can be grouped. This is a useful feature if you have device groups where each group should play different content but the
 content within the group needs to be played in sync. In the configuration file a group ID can be set by the user for each device. Within each group a master
 is elected who calculates the roundtrip delay for each slave within the same group. If a device receives a package from an device which is not in the same group
-the message is not processed any further. The group ID of the master is transmitted in the update. The first step a slave device does after receiving an update is 
+the message is not processed any further. The group ID of the master is transmitted in the \textit{update}. The first step a slave device does after receiving an \textit{update} is 
 comparing the group ID from the sending master to the own group ID. If the group IDs are not matching the received message is not processed any further. \\
 
 \textbf{Force:} \\
 A device can be specified as master device in the configuration file. If this option was set by the user this variable is set to one otherwise it is zero.
-This vale is for slaves not relevant, but if a master receives an update from an other master which is within the same group this parameter is important.
+This vale is for slaves not relevant, but if a master receives an \textit{update} from an other master which is within the same group this parameter is important.
 How this parameter is processed is described in detail at the chapter master election. This parameter is important to avoid conflicts where more than
 one master occur in a system. \\
 
-\textbf{The seconds of $t_1$ and the micro seconds of the timespamp $t_1$:} \\
-Immediately before the update is broadcasted a timestamp is taken. The values of the timestamp is transmitted in the update as message ID. This message ID is
-sent back from the slave in the answer. When the timestamp is taken the function \lstinline{gettimeofday()}, which is used for the timestamps, 
+\textbf{The time value of $t_1$ in seconds and micro seconds:} \\
+Immediately before the \textit{update} is broadcasted a timestamp is taken. The values of the timestamp is transmitted in the \textit{update} as message ID. This message ID is
+sent back from the slave in the \textit{answer}. When the timestamp is taken the function \lstinline{gettimeofday()}, which is used for the timestamps, 
 returns the type \lstinline{struct timeval}. The members of the struct \lstinline{tv_sec} and \lstinline{tv_usec} are of the type \lstinline{long int}. 
 The size of a long int depends of the architecture of the device. The type \lstinline{int} or \lstinline{unsigned int} has the same size independent from the
 architecture. Therefore the values had to be converted before they could be sent over the network. This type has the same size on all architectures, 
@@ -346,49 +346,50 @@ The \lstinline{htonl()} function converts the unsigned integer hostlong from hos
 Therefore the values from the timestamp $t_1$ are transmitted as \lstinline{unsigned int}. \\
 
 \textbf{Next event in micro seconds:} \\
-If the master device initializes an event the time to the event is added to the update. 
+If the master device initializes an event the time to the event is added to the \textit{update}. 
 The value is calculated by the master device for every message new till the event, this is to give a security if one message is lost or not received by the slave. 
 For this application a security factor of 3 had been chosen. The time is calculated in a way, 
 that it is ensured that each device receives at regularly 3 messages before the event is started on all nodes in the system.
 $$ Time to event = (intervalltime + max. trasmition delay) * security factor$$
-The calculated value is broadcasted with the update in microseconds as a unsigned integer.
+The calculated value is broadcasted with the \textit{update} in microseconds as a unsigned integer.
 Each slave subtracts it's own roundtrip delay from the time till the event and starts a internal countdown. \\
 
 \textbf{Array of struct device:} \\
-The information about the current average transmission delay of each slave is needed in each update. 
+The information about the current average transmission delay of each slave is needed in each \textit{update}. 
 The information is organized in a customized struct which was called device. This struct contains an IP and an transmission delay. 
-The update contains a array of this struct, in which the individual values for each device are stored. If an event is requested, each slave searches it's own IP
+The \textit{update} contains a array of this struct, in which the individual values for each device are stored. If an event is requested, each slave searches it's own IP
 in the array after receiving the message. Each device subtracts it's own transmission delay form the time till the event. 
 The maximum number of nodes within a group is restricted with the size of this array, this restriction was set to 64.\\
 
 \textbf{The preload ID:} \\
 Before a event can be started the content which is requested in sync must be loaded on each device. If a new event is requested each slave first gets a 
-notification that it should load the requested content. This notification is implemented as a ID which is enhanced by one every time a new event is requested.
+notification that it should load the requested content. This notification is implemented as an ID which is enhanced by "$1$" every time a new event is requested.
 The slave compares the last processed preload ID with the current one and starts notifies the player to load the requested content, if they are not equal. \\
 
 \textbf{Requested content:} \\
-This is implemented as an character array which holds the sync request and the filename of the content which should be synced next. 
-If the slave receives a new preload request with the update it forwards the request hold in this string to the player. \\ 
+The name of the requested content had to be transmitted in the update as well.
+This is implemented as a character array which holds the sync request and the filename of the content which should be synced next. 
+If the slave receives a new preload request with the \textit{update} it forwards the request hold in this string to the player. \\ 
 
 \textbf{Event ID:} \\
-The event ID is similar to the preload ID, if the event ID in the update is not equal to the last processed event ID the steps to initialize an event are taken. \\
+The event ID is similar to the preload ID, if the event ID in the \textit{update} is not equal to the last processed event ID the steps to initialize an event are taken. \\
 
 The whole information of the package is collected in a packed struct before it is broadcasted. % if I need some more text I can here say what packed means and why !! 
 The size of this whole structure is not bigger than 0.6 kB, which is a relative small package.
 
 \subsubsection{Answer Package}
 
-After the slave received an update from a master it replies to it with the answer package. 
-The master receives this answer and calculates as described above the transmission delay for the slave. Over the calculated values a moving average is
+After the slave received an \textit{update} from a master it replies to it with the \textit{answer} package. 
+The master receives this \textit{answer} and calculates as described above the transmission delay for the slave. Over the calculated values a moving average is
 built for each slave. \\
 
 \textbf{Group ID:} \\
-The slave adds his own group ID to the answer package. This information is important that a master does not process information from slaves which
+The slave adds his own group ID to the \textit{answer} package. This information is important that a master does not process information from slaves which
 are not in the same group. \\
 
 \textbf{The seconds of $t_1$ and the micro seconds of the timespamp $t_1$:} \\
-These two values are used as mentioned as message ID. They are received from the update and copied to the answer. 
-The master device can use this value directly to calculate the roundtrip and transmission delay, after he received the answer. \\
+These two values are used as mentioned as message ID. They are received from the \textit{update} and copied to the \textit{answer}. 
+The master device can use this value directly to calculate the roundtrip and transmission delay, after he received the \textit{answer}. \\
 
 \textbf{Ready ID:} \\
 If the slave received a prelaod request and it has notified the player, the player confirms after he has successfully loaded the requested content.
@@ -427,43 +428,49 @@ The following scenarios where considered when designing the dynamic election: \\
     \item several devices are added to a system with no master at the exact same time, for example after a blackout
 \end{itemize}
 
-\subsubsection[Implementation of the master election]{Implementation of the master election}
+\subsubsection{Implementation of the Master Election}
 
 The basic principle for the master election is that a devices switches in master mode if no master is in the system. If two masters occur in the same
 system the IP addresses of the two masters are compared and the device with happens to have the higher IP remains as only master. The master
 election was designed that the already defined package types, which are necessary for the regular work mode, could be used. \\*
 
 When the application is started the configuration file is read. If in the configuration option is set that the device should be the master, 
-the program starts as master and a global variable \lstinline{b_force} is set to one. This variable is also included in the updates which are broadcasted 
-over the network. If the device was not specified as master the program starts in slave mode and listens for updates. 
-If a update is received from a master with the same group ID an answer package is sent. 
-If no update is received for a defined time period the device becomes a master. The time how long the slave waits for an update is defined as
+the program starts as master and a global variable \lstinline{b_force} is set to one. This variable is also included in the \textit{updates} which are broadcasted 
+over the network. If the device was not specified as master the program starts in slave mode and listens for \textit{updates}. 
+If a \textit{update} is received from a master with the same group ID an \textit{answer} package is sent. 
+If no \textit{update} is received for a defined time period the device becomes a master. The time how long the slave waits for an \textit{update} is defined as
 \lstinline{L_INT_WAITTIME}, and set in this application to 3 seconds. \\
 
 The master and slave mode are implemented as functions which are called by  the main function, each mode contains a infinite loop from which is braked out 
 if the stop signal is set. \\
 The stop signal is set in the following situations:
 \begin{itemize}
-    \item the slave function does not receive an update
-    \item if a dynamic elected master received an update from a specified master  
-    \item if a specified master received an update from a specified master with an higher IP
-    \item if a dynamic elected master received an update from a other dynamic elected master with an higher IP
+    \item the slave function does not receive an \textit{update}
+    \item if a dynamic elected master received an \textit{update} from a specified master  
+    \item if a specified master received an \textit{update} from a specified master with an higher IP
+    \item if a dynamic elected master received an \textit{update} from a other dynamic elected master with an higher IP
 \end{itemize}
 
-\begin{center}
-\includegraphics[width=0.35\textwidth,keepaspectratio]{main}
-\end{center}
+\begin{figure}[h!]
+    \centering
+        \includegraphics[width=0.35\textwidth,keepaspectratio]{main}
+        \caption{Visual description of the main routine}
+\end{figure}
 
 Before the function returns all allocated memory is freed by a cleanup handler. In the main function the next mode/function is called after a mode returned. 
 This is also implemented in a infinite loop so that a slave which became master can become a slave again. For example when a other master which was specified 
 by the user is added to the system. Before the master function returns all threads which where called in the function are terminate and the in each thread the
-allocated memory is freed and the mutex variables which are hold currently by the thread are unlocked.
+allocated memory is freed and the \textit{mutex} variables which are hold currently by the thread are unlocked.
 After all threads exited the function returns. If the master was a dynamic elected master he starts in slave mode, 
 if the master was already a specified one a error message informs the user that two specified master are currently in the system and the application terminates.
 
-\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{master-election}
+\begin{figure}[h!]
+    \centering
+        \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{master-election}
+        \caption{Visual description of the master election}
+\end{figure}
 
-\subsection{Final design of the Protocol}
+\subsection{Final Design of the Protocol}
 
 In the following section it is shown how the final design of the protocol combines the regular work mode with the master election and how
 the different package types are used. Therefore the protocol was visualized with a message sequence chart. 
@@ -480,25 +487,25 @@ which could occur are pointed out.
 
 When the devices is added to a system it starts in slave mode. Here it can been seen that device B is in the 
 begin the only device in the system. After some time the devices A, C and D are also switched on. In the
-slave mode the application is waiting for an update from a master. 
+slave mode the application is waiting for an \textit{update} from a master. 
 
-If no update is received in the slave mode the device switches to the master mode. Here the device B switches
-at first in the master mode, because it was started at first and the timeout for waiting for an update is
-already over on this device. In the master mode the device starts to broadcast updates to each node in 
-the network. The other devices stay in save mode because an update was received. Each device pings back to
+If no \textit{update} is received in the slave mode the device switches to the master mode. Here the device B switches
+at first in the master mode, because it was started at first and the timeout for waiting for an \textit{update} is
+already over on this device. In the master mode the device starts to broadcast \textit{update}s to each node in 
+the network. The other devices stay in save mode because an \textit{update} was received. Each device pings back to
 the master device.
 
-When the device is taken off the network which was dynamically elected as master, no more updates are broadcasted
-over the network. In this case the device B is removed from the system. After no update was received all the
+When the device is taken off the network which was dynamically elected as master, no more \textit{updates} are broadcasted
+over the network. In this case the device B is removed from the system. After no \textit{update} was received all the
 remaining devices switch in the master mode. Here it can be seen that device A, C and D are now in the master mode.
 After a master receives a master message it compares it's own IP to the one from the other master. If the own
 IP is lower it switches back to slave mode again. In this example, device C and D turn into slaves again, A 
-remains the master and continues broadcasting updates.
+remains the master and continues broadcasting \textit{updates}.
 
-If a devices is added to a network where there is already a master it just starts to answer to the received
-updates. In this case device B is turned on again an is now a slave node.
+If a devices is added to a network where there is already a master it just starts to \textit{answer} to the received
+\textit{updates}. In this case device B is turned on again an is now a slave node.
 
-If a slave node is taken off the network, it can't reply anymore to updates. The master device deletes 
+If a slave node is taken off the network, it can't reply anymore to \textit{updates}. The master device deletes 
 a slave device which is not responding for a period from it's intern list.
 
 \end{multicols}
@@ -506,11 +513,15 @@ a slave device which is not responding for a period from it's intern list.
 \newpage
 
 \begin{multicols}{2}
-\includegraphics[width=0.45\textwidth,keepaspectratio]{workingmode2.png} \\ \\ \\
+\includegraphics[width=0.45\textwidth,keepaspectratio]{workingmode2.png} 
+%\begin{center}
+\caption{Figure: Message Sequence Chart} \\ \\ \\ 
+%\end{center}
 
+%\vspace*{1in}
 If a device is added to a system where already a dynamically elected master exists, the specified master starts
-to broadcast updates, where the information that it is a forced master is contained in the update. The other 
-master reads this information, if it receives an update from an master and switches in slave mode and starts to
+to broadcast \textit{updates}, where the information that it is a forced master is contained in the \textit{update}. The other 
+master reads this information, if it receives an \textit{update} from an master and switches in slave mode and starts to
 respond to the new master. Also all the other devices start to respond to the new master.
 \end{multicols}
 
@@ -526,7 +537,7 @@ code can be optimized much more than higher-level languages and the language set
 %_c_language. 
 C is a very powerful programming language, it is best used for data structures and designing system software. % !!!direct quote iimchyderabad.com/Material/cnotes.pdf
 
-\section{Communication UTP}
+\section{Communication - UTP}
 
 % all qutes from the Illustrated network 
 For transmitting the so far described package the User Datagram Protocol was used.
@@ -545,7 +556,7 @@ It is also suitable for broadcasting information.
 For this project one of the main advantage was the lack of delivery control mechanism and the resulting speed of the Protocol.
 Therefore in the event synchronization application the communication between the devices is established with the User Datagram Protocol (UDP). 
 
-\subsection{Set up connection}
+\subsection{Set up Connection}
 
 In order for the application to be able to send and receive UTP packets an interface between the application and the network is necessary, this is 
 provided by so called sockets. The application creates the socket, where the socket type defines the communication typ. 
@@ -568,17 +579,19 @@ When transmitting packets with UTP the connection is not established before send
 \lstinline{sendto()} without connecting first to the server, when UTP is used the server also does not accept a connection, it immediately calls
 \lstinline{recvfrom()} and waits for any data. The following graphic shows a model of server client communication.
 
-\begin{center}
-\includegraphics[width=0.3\textwidth,keepaspectratio]{server-client.jpg}
-\end{center}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.3\textwidth,keepaspectratio]{server-client.jpg}
+        \caption{UTP concept}
+\end{figure}
 
 When the socket should not be assigned to one particular address and instead watch out for all messages which are transmitted to this node over the network,
 the member \lstinline{s_svadr.sin_addr.s_addr} must be set to \lstinline{INADDR_ANY}. A socket also can be bound to the broadcast address and that receives
 all messages which are broadcasted over the network.
 
-\subsubsection{Broadcast messages}
+\subsubsection{Broadcast Messages}
 
-For the application it is necessary not only to send packages between two devices, it is also needed to broadcast information. For example the updates from
+For the application it is necessary not only to send packages between two devices, it is also needed to broadcast information. For example the \textit{updates} from
 the master should be broadcasted. When messages are broadcasted, each device in the network receives the message without being addressed. To broadcast
 messages over the network first the broadcast address needs to be calculated. 
 Each device which uses the IP Protocol for communication needs a unique identifier, the so called IP address. With this identifier each device on the network can
@@ -592,9 +605,11 @@ For getting the broadcast address of a network in a application the device perfo
 mask where all the host-bits are set to 1. The graphic shows the operation how a broadcast address is formed.
 % graphic form http://www.ehow.com/how_5175490_calculate-broadcast-address.html %it is a complete useless graphic but I need something to fill pages !!!
 
-\begin{center}
-\includegraphics[width=0.35\textwidth,keepaspectratio]{broadcast.jpg}
-\end{center}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.35\textwidth,keepaspectratio]{broadcast.jpg}
+        \caption{Calculating broadcast address}
+\end{figure}
 
 % one more quote from the main page !!!
 When messages are broadcasted, the socket has to be configured, after it was created and bound to the interface, to enable broadcasting. 
@@ -607,11 +622,11 @@ the option must be specified, for this application the level had to be specified
 An other socket option has to be set, that indicates that the addresses supplied in a \lstinline{bind()} call should allow reuse of local addresses.
 This option is set with \lstinline{setsockopt()} and the name of the option is \lstinline{SO_REUSEADDR}. 
 
-\section{Master-mode}
+\section{Master Mode}
 
 As long as a device is the master device the program loops in the master function. The master function has to perform the listed tasks:
 \begin{itemize}
-    \item periodically prepare and broadcast updates
+    \item periodically prepare and broadcast \textit{updates}
     \item receive and process response packages from the slaves
     \item calculate the moving average of the roundtrip delay for each slave device 
     \item check if all devices still active in the system or if one was taken off the network 
@@ -661,40 +676,40 @@ int pthread_join(pthread_t thread, void **retval);
 \end{lstlisting}
 waits for the thread specified by \lstinline{thread} to terminate.
 
-\subsubsection{Mutual exclusion}
+\subsubsection{Mutual Exclusion}
 
 When using multiple threads and shared data it is necessary to ensure that at no time two processes access the data at the same time.
 The section in the code in which the shared data is accessed in a thread is called critical section, this section must not be accessed by
 % publib.boulder.ibm.com/infocenter/aix/v7r1/index.jsp?topic=%Fcom.ibm.aix.genprogc%2Fdoc%2Fgenproc%2Fmutexes.html
 two or more threads at the same time. This is a basic problem in concurrent computing, to protect resources from parallel access, mutexes are used.
-A mutex is a mutual exclusion lock which can only be hold by one thread at a time.
+A \textit{mutex} is a mutual exclusion lock which can only be hold by one thread at a time.
 %www.thinkingparallel.com/2006/09/09/mutual-exclusion-with-locks-an-introduction
-One of the challenges in programming is to find all section in a code where shared data is accessed. It is really hard to debug a missing mutex, 
+One of the challenges in programming is to find all section in a code where shared data is accessed. It is really hard to debug a missing \textit{mutex}, 
 because the error can not be reproduced that easily and the error may not occur for many runs. Therefore it is very important to comprehensively test programs where multiple threads access shared memory.
-A mutex variable can have to sates: locked/set and unlocked/reset. 
+A \textit{mutex} variable can have to sates: locked/set and unlocked/reset. 
 If a thread wants to access a shared memory the \lstinline{pthread_mutex_lock()} function
 \begin{itemize}
-    \item locks the mutex, if it is currently unlocked
-    \item blocks the calling thread, if the mutex is already locked by an ohter tread, untill it is unlocked again
-    \item might block forever, if the mutex which was tired to be locked is already held by the current thread
+    \item locks the \textit{mutex}, if it is currently unlocked
+    \item blocks the calling thread, if the \textit{mutex} is already locked by an ohter tread, untill it is unlocked again
+    \item might block forever, if the \textit{mutex} which was tired to be locked is already held by the current thread
 \end{itemize}
 
 If the tread finished the critical section the \lstinline{pthread_mutex_unlock()} function
 \begin{itemize}
-    \item unlocks the mutex, if the mutex was owned by the calling thread
-    \item returns an error, if the mutex is already unlocked
-    \item unlocks the mutex or returns an error, if the mutex was locked by an other tread, the behavior in this case depends on the type of the mutex.
+    \item unlocks the \textit{mutex}, if the \textit{mutex} was owned by the calling thread
+    \item returns an error, if the \textit{mutex} is already unlocked
+    \item unlocks the \textit{mutex} or returns an error, if the \textit{mutex} was locked by an other tread, the behavior in this case depends on the type of the \textit{mutex}.
 \end{itemize} 
 This functionality ensures that no thread can access a critical section in which shared memory is accessed which is currently processed by an other tread.
 
-A mutex is created by calling \lstinline{pthread mutex init()} if \lstinline{NULL} is passed as argument to the function, the mutex will have the default 
-attributes. The ID of the created mutex is returend to the calling thread through the mutex parameter. When a mutex is not needed anymore it should be
+A \textit{mutex} is created by calling \lstinline{pthread mutex init()} if \lstinline{NULL} is passed as argument to the function, the \textit{mutex} will have the default 
+attributes. The ID of the created \textit{mutex} is returend to the calling thread through the \textit{mutex} parameter. When a \textit{mutex} is not needed anymore it should be
 destroyed with \lstinline{pthread_mutex_destroy()}.
 
 
 % something about muetx, why it is needed and how it works, just in general, but I really don't feel like doing that now
 
-\subsubsection{How it was used}
+\subsubsection{How it was Used}
 
 The master-mode function call three threads, which run parallel the device stays in the master mode. 
 Before these threads are stared the connection is set up and configured. Then the function itself only call the threads and waits for them to terminate. 
@@ -702,12 +717,12 @@ The threads terminate if the stop signal as described in point xx is set. If all
 Each thread has an infinite loop that does a certain task. The tasks from the master-mode has been split up in the following three threads: \\*
 
 \textbf{Broadcast Thread:} \\*
-This threads prepares the updates and broadcasts them over the network. 
-All information needed in the update (look up point xx master-update) has to be collected and copied in the message before the components get 
+This threads prepares the \textit{updates} and broadcasts them over the network. 
+All information needed in the \textit{update} (look up point xx master-\textit{update}) has to be collected and copied in the message before the components get 
 converted form host byte order to network byte order using the function \lstinline{htonl()}. After the message is ready the whole struct is sent. \\
 
 \textbf{Receive Thread:} \\*
-This threads waits for answers from slave devices, if an answer was received a time stamp is saved. In the next step the group IDs are compared and it is
+This threads waits for \textit{answers} from slave devices, if an \textit{answer} was received a time stamp is saved. In the next step the group IDs are compared and it is
 checked if the message needs to be precessed any further. If the message is relevant to this master (matching group IDs), the transmission delay is calculated.
 For each slave their individual results must be stored separately. To maintain all the active slaves and their transmission delays and the current average delay,
 a double linked list is used. Each node of the list holds the IP of a slave and the last round trip delays and as well the current average roundtrip delay,
@@ -732,29 +747,35 @@ To implementation of the master-mode function can be seen in the graphic on the 
 
 
 \begin{landscape}
-\includegraphics[height=\textheight,keepaspectratio]{master-mode.jpg}
+    \begin{figure}[h!]
+        \includegraphics[height=\textheight,keepaspectratio]{master-mode.jpg}
+        \caption{Flow Chart - Master Mode Function}
+    \end{figure}
 \end{landscape}
 
-\section{Slave-mode}
+\section{Slave Mode}
 
 If the device is currently in the slave state, the slave function has to perform the following tasks:
 \begin{itemize}
-    \item receive updates and response to them
+    \item receive \textit{updates} and response to them
     \item communicate with the player
     \item initialize a event if necessary
 \end{itemize}
 
-All these tasks a performed in the function itself. In the slave mode the function \lstinline{recvfrom()} waits for an update from a master. 
-If an update was received in the first step it is checked if the event ID has changed and if an event has to be initialized. If an event should be 
+All these tasks a performed in the function itself. In the slave mode the function \lstinline{recvfrom()} waits for an \textit{update} from a master. 
+If an \textit{update} was received in the first step it is checked if the event ID has changed and if an event has to be initialized. If an event should be 
 stared like in the master mode a thread with a countdown is stared which terminates after the event again. Then all the informations are added to 
-the answer and the answer is sent to the master the update was received from. Also the communication with the controller is done directly in the 
+the \textit{answer} and the \textit{answer} is sent to the master the \textit{update} was received from. Also the communication with the controller is done directly in the 
 slave-mode function.
+
+%\newpage
 
 \subsection{Flow Chart}
 
 In the following flow chart the steps which are performed in the slave-mode can be seen. \\
 \begin{addmargin}{2cm}
-\includegraphics[width=0.45\textwidth,keepaspectratio]{slave-mode.jpg}
+        \includegraphics[width=0.45\textwidth,keepaspectratio]{slave-mode.jpg} \\
+        \caption{Figure 5.1.: Flow Chart - Slave Mode Function}
 \end{addmargin}
 
 \section{Integration}
@@ -762,7 +783,7 @@ In the following flow chart the steps which are performed in the slave-mode can 
 The problem solution also contained the integration of the event synchronization in the existing player, therefor the application had to communicate with
 the player, therefore a pipe has been used. 
 
-\subsection{Communication with pipe}
+\subsection{Communication with a Pipe}
 
 %ok here what is a pipe and that the set of commands and what they do
 % quotes from http://www.gnu.org/software/libc/manual/html_node/Pipes-and-FIFOs.html
@@ -791,15 +812,19 @@ while playing the current content. When the player loads a file and the file has
 requesting an event (\lstinline{sync_req}. The synchronization program can deny the request, in this case a deny message is written in the controller pipe for 
 the player (\lstinline{sync_deny}). The request is denied if the device is currently in the slave mode, if the request was denied the device continues playing
 the next content which should not be played in sync. If the device is in the master mode, each device is notified that the form the master device requested 
-sync content should be loaded. The request for loading the content is transmitted over the network with the update and on each device the request is written to
+sync content should be loaded. The request for loading the content is transmitted over the network with the \textit{update} and on each device the request is written to
 the pipe for the player (\lstinline{sync_req}). If a device has finished loading the content, the player notifies the synchronization application 
-(\lstinline{sync_rdy}) which adds the information to the answer for the master. If all devices have successfully loaded the next content, the event is 
+(\lstinline{sync_rdy}) which adds the information to the \textit{answer} for the master. If all devices have successfully loaded the next content, the event is 
 initialized by the master. Each device gives the signal to the player to start the content (\lstinline{sync_EVENT}).
 Each slave has an internal countdown which cancels the event (\lstinline{sync_cancel}) if the event is not initialized after a request for loading a content, this is to prevent
 errors if the master device is taken of the network after a request for loading was sent. \\*
 
 The whole communication over the pipes is shown in the graphic below. \\
-\includegraphics[width=\textwidth,keepaspectratio]{integration}
+\begin{figure}
+    \centering
+        \includegraphics[width=\textwidth,keepaspectratio]{integration}
+        \caption{Visual Description of the Integration}
+\end{figure}
 
 \subsection{Options for user}
 
@@ -859,7 +884,9 @@ For this option also special content can be specified, for example pictures are 
 \hspace{-17mm}\begin{tabular}{>{\raggedleft}p{0.2\linewidth} p{0.75\linewidth} p{0.1\linewidth}}
 www & World Wide Web \\
 URL & Uniform Resource Locator \\
-UDP & User Datagram Protocol
+    UDP & User Datagram Protocol \\
+NTP & Network Time Protocol \\
+MSC & Message Sequence Chart
 \end{tabular}
 
 \begin{appendix}
