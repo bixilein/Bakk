@@ -67,11 +67,22 @@ iOS Developer Library, 2013.
 \harvarditem{{Computing Tutorials}}{2012}{threads}
 {Computing Tutorials}, 2012. {\em {computing.llnl.gov}}. 
 {\lbrack}{online}
-{\acessedthrough} <\url{https://computing.llnl.gov/tutorials/pthreads/#Thread> 
+{\acessedthrough} <\url{https://computing.llnl.gov/tutorials/pthreads/#Thread}> 
 [{\acessedat} 6.7.2011].
 
+% Mutex 
+\harvarditem{{IBM DB2 Database for Linux}}{2013}{mutex}
+{IBM DB2 Database for Linux}, 2013. {\em {Using Mutexes}}. 
+{\lbrack}{online}
+{\acessedthrough} <\url{https://publib.boulder.ibm.com}> 
+[{\acessedat} 6.7.2011].
 
-
+% Pipe 
+\harvarditem{{GNU Operating System}}{2013}{pipe}
+{GNU Operating System}, 2013. {\em {Pipes and FIFOs}}. 
+{\lbrack}{online}
+{\acessedthrough} <\url{www.gnu.org}> 
+[{\acessedat} 6.7.2011].
 
 
 

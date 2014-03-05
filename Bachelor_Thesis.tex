@@ -124,7 +124,7 @@
 \begin{minipage}{14cm}
 \bfseries\huge
 % insert title:
-Event synchronization for micro controller in a local network
+Event Synchronization for \\*Microcontroller in a Local Network
 \end{minipage}
 }
 % insert author:
@@ -699,8 +699,7 @@ waits for the thread specified by \lstinline{thread} to terminate.
 
 When using multiple threads and shared data it is necessary to ensure that at no time two processes access the data at the same time.
 The section in the code in which the shared data is accessed in a thread is called critical section, this section must not be accessed by
-% publib.boulder.ibm.com/infocenter/aix/v7r1/index.jsp?topic=%Fcom.ibm.aix.genprogc%2Fdoc%2Fgenproc%2Fmutexes.html
-two or more threads at the same time. This is a basic problem in concurrent computing, to protect resources from parallel access, mutexes are used.
+two or more threads at the same time, as pointed out in \citep{mutex}. This is a basic problem in concurrent computing, to protect resources from parallel access, mutexes are used.
 A \textit{mutex} is a mutual exclusion lock which can only be hold by one thread at a time.
 %www.thinkingparallel.com/2006/09/09/mutual-exclusion-with-locks-an-introduction
 One of the challenges in programming is to find all section in a code where shared data is accessed. It is really hard to debug a missing \textit{mutex}, 
@@ -724,9 +723,6 @@ This functionality ensures that no thread can access a critical section in which
 A \textit{mutex} is created by calling \lstinline{pthread mutex init()} if \lstinline{NULL} is passed as argument to the function, the \textit{mutex} will have the default 
 attributes. The ID of the created \textit{mutex} is returend to the calling thread through the \textit{mutex} parameter. When a \textit{mutex} is not needed anymore it should be
 destroyed with \lstinline{pthread_mutex_destroy()}.
-
-
-% something about muetx, why it is needed and how it works, just in general, but I really don't feel like doing that now
 
 \subsubsection{How it was Used}
 
@@ -804,9 +800,8 @@ the player, therefore a pipe has been used.
 
 \subsection{Communication with a Pipe}
 
-%ok here what is a pipe and that the set of commands and what they do
 % quotes from http://www.gnu.org/software/libc/manual/html_node/Pipes-and-FIFOs.html
-A pipe is a mechanism for interprocess communication, data written to the pipe by one process can be read by another process. 
+A pipe is a mechanism for interprocess communication, as described in \citep{pipe}. Data written to the pipe by one process can be read by another process. 
 The data in a pipe is handled in a first-in, first-out (FIFO) order, therefore pipes are referred as FIFO in the further descriptions.
 A FIFO has to be open at both ends, that means that it can only be written to a FIFO from which is read by a other precess, it also can be read
 from a FIFO a other process is writing to.
@@ -877,7 +872,15 @@ This can cause the screen to show no content for a short period (usually not lon
 In this case the device is playing some other content which must not be in sync, if all devices finished the old contend the new content will be interrupted. 
 For this option also special content can be specified, for example pictures are a good option for this purpose.
 
-\chapter{Conclusion and Prospect}
+\section{Conclusion and Prospect}
+
+An application was designed and implemented which gave the company \textit{"Dension"} the requested possibility to 
+synchronize events on their devices. The basic idea and the concept of the solution were based on a comprehensive analysis
+in the subject area. The implementation of the program was finished and afterwards it was tested on representative networks. 
+The accuracy which could be achieved in these networks with the application was in average
+1 millisecond, which complied to the requirements. When an event is initialized in the current sate of the application the
+player on the device is notified to start the requested content. The program can easily be adjusted for further other application, by
+implementing an new sets of commands with which other processes as the player can be notified to do a task to a given time.
 
 % yehhh an other thing were I have no idea what I should write 
 
@@ -911,7 +914,8 @@ MSC & Message Sequence Chart
 \begin{appendix}
 \chapter[Source Code]{Source Code}
 
-% here comes my hole source in the end
+FILE: syncd.c
+%\lstinputlisting[language=C]{syncd.c}
 
 \end{appendix}
 
