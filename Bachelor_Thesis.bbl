@@ -5,7 +5,7 @@
 Yildmm, K.S., Kantarci, A., 2010. 
 {\em Clock Synchronization in Distributed Systems}. 
 {\lbrack}Paper
-{\rbrack \ } Turkey: Ege University,Computer Engineering Department. 
+{\rbrack \ } Turkey: Ege University, Computer Engineering Department. 
 
 % NTP general
 \harvarditem{{NTP - The Network Time Protocol}}{2014}{NTP}
@@ -18,6 +18,15 @@ Yildmm, K.S., Kantarci, A., 2010.
 {The Network Time Protocol (NTP) Distribution}, 2011. {\em {The Network Time Protocol (NTP) Distribution}}. 
 {\lbrack}{online}{\rbrack }
 {\acessedthrough} <\url{http://www.eecis.udel.edu/~mills/ntp/html/index.html}> [{\acessedat} 11.1.2014].
+
+% MSC (just because)
+\harvarditem{Reniers}{1999}{MSC}
+Reniers, M.A., 1999. 
+{\em Message Sequence Chart - Syntax and Semantics}. 
+{\lbrack}Thesis
+{\rbrack \ } The Netherlands: UniversiteitsDrukkerij, Eindhoven. 
+
+
 
 
 

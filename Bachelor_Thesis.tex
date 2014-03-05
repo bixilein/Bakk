@@ -293,13 +293,15 @@ $t_2$ is the timestamp when the response packet is sent from the device\\*
 $t_3$ is the timestamp of the response packet reception.\\*
 With the knowledge of this two values the clock frequency is adjusted to reduce the offset.
 
-%hallo
 \chapter{Design of the Solution}
  
 For the solution of the given problem a simple protocol was designed with a master/slave configuration where packages are transmitted
-over a local network. In the master/slave principle the master has unidirectional control over the other devices.
-The master saves timestamps when sending and receiving a package from which the round trip delay is calculated for every device in the system. 
+over a local network. 
+The application was designed that, the master had unidirectional control over the slave devices. 
+In the designed program the master saves timestamps when sending and receiving a package from which the round trip delay is calculated, for every device in the system. 
+The calculation were based on the formulas which are used in common NTP implementations. 
 
+%hallo down (no quotes needed)
 \section{Protocol}
 
 In the regular working mode the master device broadcasts frequently packages to all devices in the network. These packages will be referred as "\textit{updates}" 
@@ -317,7 +319,7 @@ transmission delay initialize the event.
 
 \subsection{Packages}
 
-There are two different types of packages which are transmitted over the network. The package which is broadcasted by the master, the \textit{update}, and the \textit{answer} which
+The algorithm was designed with two different types of packages which are transmitted over the network. The package which is broadcasted by the master, the \textit{update}, and the \textit{answer} which
 is sent back to the master from the slave, the \textit{answer}. Each package contains different information and based on this the message type can be identified from the 
 receiving device.
 
@@ -400,21 +402,22 @@ If the slave received a prelaod request and it has notified the player, the play
 If this confirmation arrives the slave copies the ID of the current preload request in the ready ID value. The master can compare the ready ID from the slave 
 to the current preload ID, if they are equal the master marks the slave as ready. If all slaves are ready the time till the event can be calculated and
 the event can be initialized.
+%hallo up (no quotes needed)
 
 \subsection{Master Election}
 
 After the application has started in the first step a master has to be defined. In the network all nodes are equal and similar to each other but each one
 has a unique IP address. A master device has to be elected within the system. Therefore a master election had to be designed as part of the program. 
-There are two ways how a master can be found in this application. The first one is to set a device as the master manually. 
-This can be done with an configuration option, which can be set by the user in the configuration file. The other way to find a master in the network is
+There were two ways implemented how a master can be found in the application. The first one is to set a device as master manually.
+This can be done with an configuration option, which can be set by the user in the configuration file. 
+The other implemented option to find a master in the network is
 a dynamic election. The dynamic election is put to use if no master was specified in a system. \\
 
 \textbf{The user specifies a master:} \\*
-The user has the possibility to specify a master in the configuration file. To specify the master the correlating option has to be set in the configuration file. 
+In the final program the user has the possibility to specify a master in the configuration file. To specify the master the correlating option has to be set in the configuration file. 
 If this configuration option is set to true there will be no further dynamic election of any master in the system. 
-If two master would be specified a conflict would arise. To prevent errors which would arise with two specified master only one master is allowed in a system. 
-To make sure only one master exists at any time within the same system one master is discarded if there are more than one. 
-To decide which master has to be terminated the IPs of the devices are compared.
+If two masters would have been specified a conflict would arise. To prevent errors which could occur with two specified master only one master is allowed in a system. To make sure only one master exists at any time within the same system one master is discarded if there are more than one. 
+To decide which master has to be terminated the IP addresses of the devices are compared.
 The specified master with the higher IP continues as master and on the other device the application terminates and an error message is printed 
 on the output screen for the user. The error message informs the user that only one master can be specified within the same group and asks the user to check
 the configurations. \\
@@ -434,7 +437,7 @@ The following scenarios where considered when designing the dynamic election: \\
 
 \subsubsection{Implementation of the Master Election}
 
-The basic principle for the master election is that a devices switches in master mode if no master is in the system. If two masters occur in the same
+The basic principle of the implemented master election is that a devices switches in master mode if no master is in the system. If two masters occur in the same
 system the IP addresses of the two masters are compared and the device with happens to have the higher IP remains as only master. The master
 election was designed that the already defined package types, which are necessary for the regular work mode, could be used. \\*
 
@@ -461,6 +464,8 @@ The stop signal is set in the following situations:
         \caption{Visual description of the main routine}
 \end{figure}
 
+\newpage
+
 Before the function returns all allocated memory is freed by a cleanup handler. In the main function the next mode/function is called after a mode returned. 
 This is also implemented in a infinite loop so that a slave which became master can become a slave again. For example when a other master which was specified 
 by the user is added to the system. Before the master function returns all threads which where called in the function are terminate and the in each thread the
@@ -474,21 +479,17 @@ if the master was already a specified one a error message informs the user that 
         \caption{Visual description of the master election}
 \end{figure}
 
+\newpage
+
 \subsection{Final Design of the Protocol}
 
-In the following section it is shown how the final design of the protocol combines the regular work mode with the master election and how
-the different package types are used. Therefore the protocol was visualized with a message sequence chart. 
-The purpose of a MSC (Message Sequence Chart) is to provide a language to specify and describe the communication behavior of system components 
-and their environment by means of message interchange. % direct wiki quote !!!
-To visualize the protocol with a MSC also was an necessary and important step to design the application, because through the visualizing conflicts
-which could occur are pointed out.
-
-\newpage
+In the following section the final design of the protocol was visualized with the help of a Message Sequence Chart. \\ 
 
 \begin{multicols}{2}
 
-\includegraphics[width=0.45\textwidth,trim = 0mm 20mm 0mm 0mm,clip,keepaspectratio]{workingmode1.png} \\ \\
+\includegraphics[width=0.45\textwidth,trim = 0mm 20mm 0mm 0mm,clip,keepaspectratio]{workingmode1.png} \\ %\\
 
+%hallo down (no quotes)
 When the devices is added to a system it starts in slave mode. Here it can been seen that device B is in the 
 begin the only device in the system. After some time the devices A, C and D are also switched on. In the
 slave mode the application is waiting for an \textit{update} from a master. 
@@ -528,8 +529,15 @@ to broadcast \textit{updates}, where the information that it is a forced master 
 master reads this information, if it receives an \textit{update} from an master and switches in slave mode and starts to
 respond to the new master. Also all the other devices start to respond to the new master.
 \end{multicols}
+%hallo up (no quotes)
 
-With this design of the protocol only two types of packages are needed and both the dynamical as the manual election of a master device is integrated in
+It is shown how the final design of the protocol combines the regular work mode with the master election and how
+the different package types are used. 
+The step of visualizing the protocol with a MSC is an necessary and important step to design a application, as pointed out in \citep{MSC}. Through the visualizing conflicts which could occur are pointed out.
+The purpose of a MSC (Message Sequence Chart) is to provide a language to specify  a communication behavior of system components 
+and their environment. \\ %if I feel like it I can write more about MSC, just because I have such a nice source
+
+With this design of the protocol, only two types of packages are needed and both the dynamical as the manual election of a master device is integrated in
 the regular working mode.
 
 \chapter{Implementation}
